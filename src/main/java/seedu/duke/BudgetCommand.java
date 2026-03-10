@@ -1,9 +1,5 @@
 package seedu.duke;
 
-import java.io.IOException;
-
-import Storage.Storage;
-
 public class BudgetCommand extends Command {
     private double value;
 
@@ -12,10 +8,9 @@ public class BudgetCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenses, UI ui, Storage storage) throws ExpensiveLehException, IOException {
+    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
         boolean isNewBudget = expenses.getBudget() == 0.0;
         expenses.setBudget(value);
-        storage.save(expenses.getBudget(), expenses.getExpenses());
         if (isNewBudget) {
             ui.showMessage("Budget of $" + String.format("%.2f", value) + " set successfully!");
         } else {

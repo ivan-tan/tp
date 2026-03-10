@@ -1,48 +1,45 @@
 package seedu.duke;
 
 import Storage.Storage;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ExpensiveLeh {
 
     private Parser parser = new Parser();
-    private Storage storage;
     private UI ui = new UI();
-    private double currentBudget;
-    private ArrayList<Expense> expenseList;
+    private Storage storage = new Storage("data/expenses.txt");
+    private ExpenseManager expenseManager;
 
-    public ExpensiveLeh(String filePath) throws IOException {
-        storage = new Storage(filePath);
-
+    public void run() {
         try {
             Storage.StorageData data = storage.load();
-            this.currentBudget = data.budget;
-            this.expenseList = data.expenses;
-
+            expenseManager = new ExpenseManager(data.expenses, data.budget);
         } catch (IOException e) {
-            this.currentBudget = 0.0;
-            this.expenseList = new ArrayList<Expense>();
+            ui.showError("Could not load save file: " + e.getMessage());
+            expenseManager = new ExpenseManager();
         }
-    }
-
-    /**
-     * Main entry-point for the java.duke.Duke application.
-     */
-    public void run() {
 
         ui.showWelcome();
 
-        try {
-            Command command = parser.readCommand();
-        } catch (ExpensiveLehException e) {
-            ui.showError(e.getMessage());
-            ui.showLine();
+        boolean isRunning = true;
+        while (isRunning) {
+            try {
+                Command command = parser.readCommand();
+                command.execute(expenseManager, ui);
+                storage.save(expenseManager.getBudget(), expenseManager.getExpenses());
+                if (command instanceof ExitCommand) {
+                    isRunning = false;
+                }
+            } catch (ExpensiveLehException e) {
+                ui.showError(e.getMessage());
+                ui.showLine();
+            } catch (IOException e) {
+                ui.showError("Could not save data: " + e.getMessage());
+            }
         }
     }
 
     public static void main(String[] args) {
-        new ExpensiveLeh("./data/storage.txt").run();
+        new ExpensiveLeh().run();
     }
 }

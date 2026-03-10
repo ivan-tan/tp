@@ -1,9 +1,5 @@
 package seedu.duke;
 
-import java.io.IOException;
-
-import Storage.Storage;
-
 public class AddCommand extends Command {
     private Expense expense;
 
@@ -12,9 +8,11 @@ public class AddCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenses, UI ui, Storage storage) throws ExpensiveLehException, IOException {
+    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
         expenses.addExpense(expense);
-        storage.save(expenses.getBudget(), expenses.getExpenses());
-        ui.showMessage("Expense added successfully! Category: " + expense.getCategory() + ", Name: " + expense.getDescription() + ", Value: $" + String.format("%.2f", expense.getAmount()) + ", Date: " + expense.getFormattedDate());
+        ui.showMessage("Expense added successfully! Category: " + expense.getCategory()
+                + ", Name: " + expense.getDescription()
+                + ", Value: $" + String.format("%.2f", expense.getAmount())
+                + ", Date: " + expense.getFormattedDate());
     }
 }

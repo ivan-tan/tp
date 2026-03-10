@@ -1,4 +1,5 @@
 package seedu.duke;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 /**
@@ -21,13 +22,13 @@ public class Parser {
 
         case "add":
             System.out.println("Added!");
-            return new AddCommand();
+            return new AddCommand(new Others("placeholder", 0.0, LocalDate.now()));
 
         case "edit":
             try {
                 int editIndex = Integer.parseInt(partsBySpace[1]) - 1;
                 System.out.println("Edited!");
-                return new EditCommand(editIndex);
+                return new EditCommand(editIndex, null, null, null, null);
             } catch (IndexOutOfBoundsException e) {
                 throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
             } catch (NumberFormatException e) {

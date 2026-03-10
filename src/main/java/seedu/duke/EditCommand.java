@@ -1,8 +1,5 @@
 package seedu.duke;
 
-import Storage.Storage;
-
-import java.io.IOException;
 import java.time.LocalDate;
 
 public class EditCommand extends Command {
@@ -21,9 +18,8 @@ public class EditCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenses, UI ui, Storage storage) throws ExpensiveLehException, IOException {
+    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
         expenses.editExpense(index, category, name, value, date);
-        storage.save(expenses.getBudget(), expenses.getExpenses());
         ui.showMessage("Expense at index " + (index + 1) + " updated successfully!");
     }
 }

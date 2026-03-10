@@ -51,9 +51,6 @@ public class ExpenseManager {
         case "groceries":
             newExpense = new Groceries(finalName, finalValue, finalDate);
             break;
-        case "others":
-            newExpense = new Others(finalName, finalValue, finalDate);
-            break;
         default:
             newExpense = new Others(finalName, finalValue, finalDate);
         }
