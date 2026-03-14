@@ -79,12 +79,21 @@ public class Storage {
             String description = parts[1];
             double amount = Double.parseDouble(parts[2]);
 
-            Expense expense = switch (category) {
-                case "F" -> new Food(description, amount);
-                case "T" -> new Transport(description, amount);
-                case "G" -> new Groceries(description, amount);
-                default -> new Others(description, amount);
-            };
+            Expense expense;
+            switch (category) {
+            case "F":
+                expense = new Food(description, amount);
+                break;
+            case "T":
+                expense = new Transport(description, amount);
+                break;
+            case "G":
+                expense = new Groceries(description, amount);
+                break;
+            default:
+                expense = new Others(description, amount);
+                break;
+            }
             loadedExpenses.add(expense);
         }
         s.close();
