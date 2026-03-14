@@ -81,15 +81,18 @@ public class Parser {
                 } else if (part.startsWith("a/")) {
                     amount = Double.parseDouble(part.substring(2));
                 } else if (part.startsWith("d/")) {
-                    date = LocalDate.parse(part.substring(2), java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                    date = LocalDate.parse(part.substring(2),
+                            java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 }
             }
 
             if (name == null || name.trim().isEmpty()) {
-                throw new ExpensiveLehException("Expense name cannot be empty. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                throw new ExpensiveLehException(
+                        "Expense name cannot be empty. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount == null) {
-                throw new ExpensiveLehException("Expense amount is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                throw new ExpensiveLehException(
+                        "Expense amount is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount <= 0) {
                 throw new ExpensiveLehException("Expense amount must be positive.");
@@ -121,7 +124,8 @@ public class Parser {
         } catch (NumberFormatException e) {
             throw new ExpensiveLehException("Invalid amount format. Please enter a valid number.");
         } catch (Exception e) {
-            throw new ExpensiveLehException("Invalid add command format. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+            throw new ExpensiveLehException(
+                    "Invalid add command format. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
         }
     }
 
@@ -154,12 +158,14 @@ public class Parser {
                 } else if (part.startsWith("a/")) {
                     amount = Double.parseDouble(part.substring(2));
                 } else if (part.startsWith("d/")) {
-                    date = LocalDate.parse(part.substring(2), java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                    date = LocalDate.parse(part.substring(2),
+                            java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 }
             }
 
             if (category == null && name == null && amount == null && date == null) {
-                throw new ExpensiveLehException("Please specify at least one field to edit: c/CATEGORY, n/NAME, a/AMOUNT, or d/DD-MM-YYYY");
+                throw new ExpensiveLehException(
+                        "Please specify at least one field to edit: c/CATEGORY, n/NAME, a/AMOUNT, or d/DD-MM-YYYY");
             }
 
             if (amount != null && amount <= 0) {
@@ -174,7 +180,8 @@ public class Parser {
         } catch (NumberFormatException e) {
             throw new ExpensiveLehException("Invalid amount format. Please enter a valid number.");
         } catch (Exception e) {
-            throw new ExpensiveLehException("Invalid edit command format. Usage: edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
+            throw new ExpensiveLehException(
+                    "Invalid edit command format. Usage: edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
         }
     }
 }
