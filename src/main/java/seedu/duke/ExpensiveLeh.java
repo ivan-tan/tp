@@ -1,6 +1,7 @@
 package seedu.duke;
 
 import storage.Storage;
+
 import java.io.IOException;
 
 public class ExpensiveLeh {
