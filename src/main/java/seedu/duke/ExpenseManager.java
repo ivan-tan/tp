@@ -13,11 +13,14 @@ public class ExpenseManager {
     }
 
     public ExpenseManager(ArrayList<Expense> expenses, double budget) {
+        assert expenses != null : "Expenses list cannot be null";
+        assert budget >= 0 : "Budget cannot be negative";
         this.expenses = expenses;
         this.budget = budget;
     }
 
     public void addExpense(Expense expense) {
+        assert expense != null : "Expense cannot be null";
         expenses.add(expense);
     }
 
