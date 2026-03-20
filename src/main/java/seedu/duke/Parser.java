@@ -77,7 +77,12 @@ public class Parser {
                 if (part.startsWith("c/")) {
                     category = part.substring(2);
                 } else if (part.startsWith("n/")) {
-                    name = part.substring(2);
+                    StringBuilder nameParts = new StringBuilder(part.substring(2));
+
+                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                        nameParts.append(" ").append(parts[++i]);
+                    }
+                    name = nameParts.toString();
                 } else if (part.startsWith("a/")) {
                     amount = Double.parseDouble(part.substring(2));
                 } else if (part.startsWith("d/")) {
@@ -153,7 +158,12 @@ public class Parser {
                 if (part.startsWith("c/")) {
                     category = part.substring(2);
                 } else if (part.startsWith("n/")) {
-                    name = part.substring(2);
+                    StringBuilder nameParts = new StringBuilder(part.substring(2));
+
+                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                        nameParts.append(" ").append(parts[++i]);
+                    }
+                    name = nameParts.toString();
                 } else if (part.startsWith("a/")) {
                     amount = Double.parseDouble(part.substring(2));
                 } else if (part.startsWith("d/")) {
