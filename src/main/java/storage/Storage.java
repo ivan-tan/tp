@@ -72,6 +72,14 @@ public class Storage {
 
             if (parts[0].equals("BUDGET")) {
                 loadedBudget = Double.parseDouble(parts[1]);
+
+                if (loadedBudget < 0) {
+                    throw new IOException("Invalid budget in file: budget cannot be negative");
+                }
+
+                assert !Double.isNaN(loadedBudget) : "Loaded budget should never be NaN";
+                assert Double.isFinite(loadedBudget) : "Loaded budget should be finite";
+
                 continue;
             }
 
