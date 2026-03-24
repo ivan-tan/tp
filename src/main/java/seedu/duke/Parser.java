@@ -56,6 +56,9 @@ public class Parser {
         case "list":
             return new ListCommand();
 
+        case "rank":
+            return new RankCommand();
+
         case "help":
             return new HelpCommand();
 
