@@ -1,15 +1,19 @@
 package seedu.duke;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class ExpenseManager {
     private final ArrayList<Expense> expenses;
     private double budget;
+    private HashMap<String, Double> categoryBudgets;
 
     public ExpenseManager() {
         this.expenses = new ArrayList<>();
         this.budget = 0.0;
+        this.categoryBudgets = new HashMap<>();
     }
 
     public ExpenseManager(ArrayList<Expense> expenses, double budget) {
@@ -17,6 +21,15 @@ public class ExpenseManager {
         assert budget >= 0 : "Budget cannot be negative";
         this.expenses = expenses;
         this.budget = budget;
+        this.categoryBudgets = new HashMap<>();
+    }
+
+    public ExpenseManager(ArrayList<Expense> expenses, double budget, HashMap<String, Double> categoryBudgets) {
+        assert expenses != null : "Expenses list cannot be null";
+        assert budget >= 0 : "Budget cannot be negative";
+        this.expenses = expenses;
+        this.budget = budget;
+        this.categoryBudgets = categoryBudgets != null ? categoryBudgets : new HashMap<>();
     }
 
     public void addExpense(Expense expense) throws ExpensiveLehException {
@@ -107,5 +120,64 @@ public class ExpenseManager {
 
     public ArrayList<Expense> getExpenses() {
         return expenses;
+    }
+
+    public void setCategoryBudget(String category, double amount) throws ExpensiveLehException {
+        if (category == null || category.trim().isEmpty()) {
+            throw new ExpensiveLehException("Category cannot be empty.");
+        }
+        if (amount < 0) {
+            throw new ExpensiveLehException("Category budget cannot be negative.");
+        }
+
+        categoryBudgets.put(category.toLowerCase(), amount);
+    }
+
+    public double getCategoryBudget(String category) {
+        return categoryBudgets.getOrDefault(category.toLowerCase(), 0.0);
+    }
+
+    public double getRemainingBudgetForCategory(String category) {
+        String categoryLower = category.toLowerCase();
+        double budgetForCategory = categoryBudgets.getOrDefault(categoryLower, 0.0);
+        double spentInCategory = 0.0;
+
+        for (Expense expense : expenses) {
+            if (expense.getCategory().equalsIgnoreCase(categoryLower)) {
+                spentInCategory += expense.getAmount();
+            }
+        }
+
+        return budgetForCategory - spentInCategory;
+    }
+
+    public HashMap<String, Double> getCategoryBudgets() {
+        return categoryBudgets;
+    }
+
+    public Map<String, Double> getCategoryTotals() {
+        Map<String, Double> map = new HashMap<>();
+
+        for (Expense expense: expenses) {
+            String category = expense.getCategory();
+            double amount = expense.getAmount();
+
+            map.put(category, map.getOrDefault(category, 0.0) + amount);
+        }
+        return map;
+    }
+
+    public ArrayList<Expense> searchByKeyword(String keyword) {
+        ArrayList<Expense> results = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+        
+        for (Expense expense : expenses) {
+            if (expense.getDescription().toLowerCase().contains(lowerKeyword) ||
+                expense.getCategory().toLowerCase().contains(lowerKeyword)) {
+                results.add(expense);
+            }
+        }
+        
+        return results;
     }
 }

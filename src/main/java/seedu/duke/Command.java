@@ -1,5 +1,5 @@
 package seedu.duke;
 
 public abstract class Command {
-    public abstract void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException;
+    public abstract void execute(Managers managers, UI ui) throws ExpensiveLehException;
 }

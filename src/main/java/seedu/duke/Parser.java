@@ -1,5 +1,7 @@
 package seedu.duke;
 
+import loans.Loan;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -26,8 +28,16 @@ public class Parser {
         case "budget":
             try {
                 if (partsBySpace.length < 2) {
-                    throw new ExpensiveLehException("Please provide a budget amount!");
+                    throw new ExpensiveLehException(
+                            "Please provide a budget amount or use 'budget c/CATEGORY a/AMOUNT'!");
                 }
+
+                // Check if it's a category budget command
+                if (line.contains("c/") && line.contains("a/")) {
+                    return parseBudgetCategoryCommand(line);
+                }
+
+                // Default to global budget command
                 double budgetAmount = Double.parseDouble(partsBySpace[1]);
                 if (budgetAmount <= 0) {
                     throw new ExpensiveLehException("Budget must be a positive number!");
@@ -46,15 +56,47 @@ public class Parser {
         case "delete":
             try {
                 int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
-                return new DeleteCommand(deleteIndex);
+                return new DeleteCommand(deleteIndex, "expense");
             } catch (IndexOutOfBoundsException e) {
                 throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
             } catch (NumberFormatException e) {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
 
-        case "list":
-            return new ListCommand();
+        case "loans": // list all loans only
+            return new ListCommand("loans");
+
+
+        case "paid":
+            try {
+                int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
+                return new DeleteCommand(deleteIndex, "loan");
+            } catch (IndexOutOfBoundsException e) {
+                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
+            } catch (NumberFormatException e) {
+                throw new ExpensiveLehException("Please enter a valid integer!");
+            }
+
+        case "list": // either list budgets or list expenses
+            if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("budgets")) {
+                return new ListBudgetsCommand();
+            }
+            return new ListCommand("expenses");
+
+
+        case "search":
+            try {
+                if (partsBySpace.length < 2) {
+                    throw new ExpensiveLehException("Please provide a keyword to search for!");
+                }
+                String keyword = line.substring(line.indexOf("search") + 6).trim();
+                return new SearchCommand(keyword);
+            } catch (Exception e) {
+                throw new ExpensiveLehException("Search error: " + e.getMessage());
+            }
+
+        case "rank":
+            return new RankCommand();
 
         case "help":
             return new HelpCommand();
@@ -79,7 +121,7 @@ public class Parser {
                 } else if (part.startsWith("n/")) {
                     StringBuilder nameParts = new StringBuilder(part.substring(2));
 
-                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                    while (i + 1 < parts.length && !parts[i + 1].startsWith("a/")) {
                         nameParts.append(" ").append(parts[++i]);
                     }
                     name = nameParts.toString();
@@ -117,11 +159,14 @@ public class Parser {
             case "groceries":
                 expense = new Groceries(name, amount, date);
                 break;
+            case "loan":
+                expense = new Loan(name, amount, date);
+                return new AddCommand((Loan) expense, "loan");
             default:
                 expense = new Others(name, amount, date);
             }
 
-            return new AddCommand(expense);
+            return new AddCommand(expense, "expense");
 
         } catch (java.time.format.DateTimeParseException e) {
             throw new ExpensiveLehException("Invalid date format. Please use DD-MM-YYYY (e.g., 13-03-2026).");
@@ -160,7 +205,7 @@ public class Parser {
                 } else if (part.startsWith("n/")) {
                     StringBuilder nameParts = new StringBuilder(part.substring(2));
 
-                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                    while (i + 1 < parts.length && !parts[i + 1].startsWith("a/")) {
                         nameParts.append(" ").append(parts[++i]);
                     }
                     name = nameParts.toString();
@@ -190,6 +235,43 @@ public class Parser {
         } catch (Exception e) {
             throw new ExpensiveLehException(
                     "Invalid edit command format. Usage: edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
+        }
+    }
+
+    private Command parseBudgetCategoryCommand(String line) throws ExpensiveLehException {
+        String category = null;
+        Double amount = null;
+
+        try {
+            String[] parts = line.split("\\s+");
+            for (int i = 1; i < parts.length; i++) {
+                String part = parts[i];
+                if (part.startsWith("c/")) {
+                    category = part.substring(2);
+                } else if (part.startsWith("a/")) {
+                    amount = Double.parseDouble(part.substring(2));
+                }
+            }
+
+            if (category == null || category.trim().isEmpty()) {
+                throw new ExpensiveLehException(
+                        "Category is required. Usage: budget c/CATEGORY a/AMOUNT");
+            }
+            if (amount == null) {
+                throw new ExpensiveLehException(
+                        "Amount is required. Usage: budget c/CATEGORY a/AMOUNT");
+            }
+            if (amount <= 0) {
+                throw new ExpensiveLehException("Budget amount must be positive.");
+            }
+
+            return new CategoryBudgetCommand(category, amount);
+
+        } catch (NumberFormatException e) {
+            throw new ExpensiveLehException("Invalid amount format. Please enter a valid number.");
+        } catch (Exception e) {
+            throw new ExpensiveLehException(
+                    "Invalid budget category command format. Usage: budget c/CATEGORY a/AMOUNT");
         }
     }
 }
