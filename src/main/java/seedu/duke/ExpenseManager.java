@@ -2,6 +2,8 @@ package seedu.duke;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ExpenseManager {
     private final ArrayList<Expense> expenses;
@@ -107,5 +109,17 @@ public class ExpenseManager {
 
     public ArrayList<Expense> getExpenses() {
         return expenses;
+    }
+
+    public Map<String, Double> getCategoryTotals() {
+        Map<String, Double> map = new HashMap<>();
+
+        for (Expense expense: expenses) {
+            String category = expense.getCategory();
+            double amount = expense.getAmount();
+
+            map.put(category, map.getOrDefault(category, 0.0) + amount);
+        }
+        return map;
     }
 }
