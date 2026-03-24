@@ -38,7 +38,7 @@ public class Storage {
     }
 
     public void save(double budget, ArrayList<Expense> expenses, ArrayList<Loan> loans,
-                     HashMap<String, Double> categoryBudgets ) throws IOException {
+                     HashMap<String, Double> categoryBudgets) throws IOException {
 
         File f = new File(filePath);
         if (f.getParentFile() != null && !f.getParentFile().exists()) {
@@ -74,12 +74,16 @@ public class Storage {
         HashMap<String, Double> loadedCategoryBudgets = new HashMap<>();
 
         File f = new File(filePath);
-        if (!f.exists()) return new StorageData(loadedBudget, loadedExpenses, loadedLoans, loadedCategoryBudgets);
+        if (!f.exists()) {
+            return new StorageData(loadedBudget, loadedExpenses, loadedLoans, loadedCategoryBudgets);
+        }
 
         Scanner s = new Scanner(f);
         while (s.hasNextLine()) {
             String line = s.nextLine();
-            if (line.trim().isEmpty()) continue;
+            if (line.trim().isEmpty()) {
+                continue;
+            }
 
             String[] parts = line.split(" \\| ");
             if (parts[0].equals("BUDGET")) {
@@ -111,10 +115,18 @@ public class Storage {
 
             Expense expense;
             switch (category) {
-            case "F": expense = new Food(description, amount, date); break;
-            case "T": expense = new Transport(description, amount, date); break;
-            case "G": expense = new Groceries(description, amount, date); break;
-            default: expense = new Others(description, amount, date); break;
+            case "F":
+                expense = new Food(description, amount, date);
+                break;
+            case "T":
+                expense = new Transport(description, amount, date);
+                break;
+            case "G":
+                expense = new Groceries(description, amount, date);
+                break;
+            default:
+                expense = new Others(description, amount, date);
+                break;
             }
             loadedExpenses.add(expense);
         }

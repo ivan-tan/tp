@@ -11,6 +11,11 @@ public class Managers {
         this.loanManager = lm;
     }
 
-    public ExpenseManager getExpenseManager() { return expenseManager; }
-    public LoanManager getLoanManager() { return loanManager; }
+    public ExpenseManager getExpenseManager() {
+        return expenseManager;
+    }
+
+    public LoanManager getLoanManager() {
+        return loanManager;
+    }
 }
