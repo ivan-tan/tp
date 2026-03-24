@@ -26,8 +26,16 @@ public class Parser {
         case "budget":
             try {
                 if (partsBySpace.length < 2) {
-                    throw new ExpensiveLehException("Please provide a budget amount!");
+                    throw new ExpensiveLehException(
+                            "Please provide a budget amount or use 'budget c/CATEGORY a/AMOUNT'!");
                 }
+
+                // Check if it's a category budget command
+                if (line.contains("c/") && line.contains("a/")) {
+                    return parseBudgetCategoryCommand(line);
+                }
+
+                // Default to global budget command
                 double budgetAmount = Double.parseDouble(partsBySpace[1]);
                 if (budgetAmount <= 0) {
                     throw new ExpensiveLehException("Budget must be a positive number!");
@@ -54,6 +62,9 @@ public class Parser {
             }
 
         case "list":
+            if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("budgets")) {
+                return new ListBudgetsCommand();
+            }
             return new ListCommand();
 
         case "help":
@@ -190,6 +201,43 @@ public class Parser {
         } catch (Exception e) {
             throw new ExpensiveLehException(
                     "Invalid edit command format. Usage: edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
+        }
+    }
+
+    private Command parseBudgetCategoryCommand(String line) throws ExpensiveLehException {
+        String category = null;
+        Double amount = null;
+
+        try {
+            String[] parts = line.split("\\s+");
+            for (int i = 1; i < parts.length; i++) {
+                String part = parts[i];
+                if (part.startsWith("c/")) {
+                    category = part.substring(2);
+                } else if (part.startsWith("a/")) {
+                    amount = Double.parseDouble(part.substring(2));
+                }
+            }
+
+            if (category == null || category.trim().isEmpty()) {
+                throw new ExpensiveLehException(
+                        "Category is required. Usage: budget c/CATEGORY a/AMOUNT");
+            }
+            if (amount == null) {
+                throw new ExpensiveLehException(
+                        "Amount is required. Usage: budget c/CATEGORY a/AMOUNT");
+            }
+            if (amount <= 0) {
+                throw new ExpensiveLehException("Budget amount must be positive.");
+            }
+
+            return new CategoryBudgetCommand(category, amount);
+
+        } catch (NumberFormatException e) {
+            throw new ExpensiveLehException("Invalid amount format. Please enter a valid number.");
+        } catch (Exception e) {
+            throw new ExpensiveLehException(
+                    "Invalid budget category command format. Usage: budget c/CATEGORY a/AMOUNT");
         }
     }
 }

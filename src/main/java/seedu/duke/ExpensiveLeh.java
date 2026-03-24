@@ -14,7 +14,7 @@ public class ExpensiveLeh {
     public void run() {
         try {
             Storage.StorageData data = storage.load();
-            expenseManager = new ExpenseManager(data.expenses, data.budget);
+            expenseManager = new ExpenseManager(data.expenses, data.budget, data.categoryBudgets);
         } catch (IOException e) {
             ui.showError("Could not load save file: " + e.getMessage());
             expenseManager = new ExpenseManager();
@@ -27,7 +27,8 @@ public class ExpensiveLeh {
             try {
                 Command command = parser.readCommand();
                 command.execute(expenseManager, ui);
-                storage.save(expenseManager.getBudget(), expenseManager.getExpenses());
+                storage.save(expenseManager.getBudget(), expenseManager.getExpenses(),
+                        expenseManager.getCategoryBudgets());
                 if (command instanceof ExitCommand) {
                     isRunning = false;
                 }

@@ -12,6 +12,7 @@ import seedu.duke.Others;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +36,7 @@ class StorageTest {
         expenses.add(new Others("Pickleball racquet", 67.0));
 
         // 2. Save data
-        storage.save(budget, expenses);
+        storage.save(budget, expenses, new HashMap<>());
 
         // 3. Load data
         Storage.StorageData loadedData = storage.load();
