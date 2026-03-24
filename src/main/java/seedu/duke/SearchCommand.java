@@ -10,7 +10,8 @@ public class SearchCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenseManager, UI ui) throws ExpensiveLehException {
+    public void execute(Managers managers, UI ui) throws ExpensiveLehException {
+        ExpenseManager expenseManager = managers.getExpenseManager();
         ArrayList<Expense> matchedExpenses = expenseManager.searchByKeyword(keyword);
 
         if (matchedExpenses.isEmpty()) {

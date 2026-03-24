@@ -4,8 +4,9 @@ import java.util.HashMap;
 
 public class ListBudgetsCommand extends Command {
     @Override
-    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
-        HashMap<String, Double> categoryBudgets = expenses.getCategoryBudgets();
+    public void execute(Managers managers, UI ui) throws ExpensiveLehException {
+        ExpenseManager expenseManager = managers.getExpenseManager();
+        HashMap<String, Double> categoryBudgets = expenseManager.getCategoryBudgets();
 
         if (categoryBudgets.isEmpty()) {
             ui.showMessage("No category budgets set yet. Use 'budget c/CATEGORY a/AMOUNT' to set a category budget.");
@@ -18,7 +19,7 @@ public class ListBudgetsCommand extends Command {
 
         for (String category : categoryBudgets.keySet()) {
             double budget = categoryBudgets.get(category);
-            double remaining = expenses.getRemainingBudgetForCategory(category);
+            double remaining = expenseManager.getRemainingBudgetForCategory(category);
             result.append(String.format("%-15s $%-14.2f $%-14.2f%n",
                     capitalize(category), budget, remaining));
         }

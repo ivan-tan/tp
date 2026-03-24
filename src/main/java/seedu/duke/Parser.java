@@ -1,5 +1,7 @@
 package seedu.duke;
 
+import loans.Loan;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -54,18 +56,33 @@ public class Parser {
         case "delete":
             try {
                 int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
-                return new DeleteCommand(deleteIndex);
+                return new DeleteCommand(deleteIndex, "expense");
             } catch (IndexOutOfBoundsException e) {
                 throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
             } catch (NumberFormatException e) {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
 
-        case "list":
+        case "loans": // list all loans only
+            return new ListCommand("loans");
+
+
+        case "paid":
+            try {
+                int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
+                return new DeleteCommand(deleteIndex, "loan");
+            } catch (IndexOutOfBoundsException e) {
+                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
+            } catch (NumberFormatException e) {
+                throw new ExpensiveLehException("Please enter a valid integer!");
+            }
+
+        case "list": // either list budgets or list expenses
             if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("budgets")) {
                 return new ListBudgetsCommand();
             }
-            return new ListCommand();
+            return new ListCommand("expenses");
+
 
         case "search":
             try {
@@ -104,7 +121,7 @@ public class Parser {
                 } else if (part.startsWith("n/")) {
                     StringBuilder nameParts = new StringBuilder(part.substring(2));
 
-                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                    while (i + 1 < parts.length && !parts[i + 1].startsWith("a/")) {
                         nameParts.append(" ").append(parts[++i]);
                     }
                     name = nameParts.toString();
@@ -142,11 +159,14 @@ public class Parser {
             case "groceries":
                 expense = new Groceries(name, amount, date);
                 break;
+            case "loan":
+                expense = new Loan(name, amount, date);
+                return new AddCommand((Loan) expense, "loan");
             default:
                 expense = new Others(name, amount, date);
             }
 
-            return new AddCommand(expense);
+            return new AddCommand(expense, "expense");
 
         } catch (java.time.format.DateTimeParseException e) {
             throw new ExpensiveLehException("Invalid date format. Please use DD-MM-YYYY (e.g., 13-03-2026).");
@@ -185,7 +205,7 @@ public class Parser {
                 } else if (part.startsWith("n/")) {
                     StringBuilder nameParts = new StringBuilder(part.substring(2));
 
-                    while (i + 1 < parts.length && !parts[i+1].startsWith("a/")) {
+                    while (i + 1 < parts.length && !parts[i + 1].startsWith("a/")) {
                         nameParts.append(" ").append(parts[++i]);
                     }
                     name = nameParts.toString();

@@ -2,7 +2,7 @@ package seedu.duke;
 
 public class HelpCommand extends Command {
     @Override
-    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
+    public void execute(Managers managers, UI ui) throws ExpensiveLehException {
         String helpMessage = "\nTo add an expense, use 'add c/CATEGORY n/NAME a/AMOUNT [date/DATE]' "
                 + "Eg: add c/Food n/Jollibee a/9.95\n"
                 + "To edit an expense, use 'edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [date/DATE]'\n"

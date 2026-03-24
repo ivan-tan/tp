@@ -10,9 +10,10 @@ public class CategoryBudgetCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
-        expenses.setCategoryBudget(category, amount);
-        boolean isNewBudget = expenses.getCategoryBudget(category) == amount;
+    public void execute(Managers managers, UI ui) throws ExpensiveLehException {
+        ExpenseManager expenseManager = managers.getExpenseManager();
+        expenseManager.setCategoryBudget(category, amount);
+        boolean isNewBudget = expenseManager.getCategoryBudget(category) == amount;
         if (isNewBudget) {
             ui.showMessage("Budget of $" + String.format("%.2f", amount) + " set successfully for " + category + "!");
         } else {

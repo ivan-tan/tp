@@ -18,8 +18,9 @@ public class EditCommand extends Command {
     }
 
     @Override
-    public void execute(ExpenseManager expenses, UI ui) throws ExpensiveLehException {
-        expenses.editExpense(index, category, name, value, date);
+    public void execute(Managers managers, UI ui) throws ExpensiveLehException {
+        ExpenseManager expenseManager = managers.getExpenseManager();
+        expenseManager.editExpense(index, category, name, value, date);
         ui.showMessage("Expense at index " + (index + 1) + " updated successfully!");
     }
 }
