@@ -81,8 +81,15 @@ public class ParserTest {
      * Tests for delete command
      */
     @Test
-    public void parseDeleteCommand_validIndex() throws ExpensiveLehException {
-        final String input = "delete 1\n";
+    public void parseDeleteExpenseCommand_validIndex() throws ExpensiveLehException {
+        final String input = "delete expense 1\n";
+        final Command result = parse(input);
+        assertInstanceOf(DeleteCommand.class, result);
+    }
+
+    @Test
+    public void parseDeleteBookmarkCommand_validIndex() throws ExpensiveLehException {
+        final String input = "delete bookmark 1\n";
         final Command result = parse(input);
         assertInstanceOf(DeleteCommand.class, result);
     }

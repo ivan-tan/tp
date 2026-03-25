@@ -55,8 +55,21 @@ public class Parser {
 
         case "delete":
             try {
-                int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
-                return new DeleteCommand(deleteIndex, "expense");
+                if (partsBySpace.length < 3) {
+                    throw new ExpensiveLehException("Usage: delete expense INDEX or delete bookmark INDEX");
+                }
+
+                String type = partsBySpace[1];
+                int deleteIndex = Integer.parseInt(partsBySpace[2]) - 1;
+
+                if (type.equals("expense")) {
+                    return new DeleteCommand(deleteIndex, "expense");
+                } else if (type.equals("bookmark")) {
+                    return new DeleteCommand(deleteIndex, "bookmark");
+                } else {
+                    throw new ExpensiveLehException("Invalid delete type. Use 'expense' or 'bookmark'");
+                }
+
             } catch (IndexOutOfBoundsException e) {
                 throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
             } catch (NumberFormatException e) {
@@ -192,6 +205,8 @@ public class Parser {
 
             return new AddCommand(expense, "expense");
 
+        } catch (ExpensiveLehException e) {
+            throw e;
         } catch (java.time.format.DateTimeParseException e) {
             throw new ExpensiveLehException("Invalid date format. Please use DD-MM-YYYY (e.g., 13-03-2026).");
         } catch (NumberFormatException e) {
