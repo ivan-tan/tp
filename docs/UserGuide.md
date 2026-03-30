@@ -15,19 +15,33 @@
 
 {Give detailed description of each feature}
 
-### Adding a todo: `todo`
-Adds a new item to the list of todo items.
+### Managing budgets : `budget`
 
-Format: `todo n/TODO_NAME d/DEADLINE`
+Sets a budget for overall spending or for a specific category.
 
-* The `DEADLINE` can be in a natural language format.
-* The `TODO_NAME` cannot contain punctuation.  
+Format: `budget AMOUNT` or `budget c/CATEGORY a/AMOUNT`
 
-Example of usage: 
+*   Sets the global budget to `AMOUNT` if no category is specified.
+*   Sets a category-specific budget if `c/CATEGORY a/AMOUNT` format is used.
+*   Budget amounts must be positive.
 
-`todo n/Write the rest of the User Guide d/next week`
+Examples:
 
-`todo n/Refactor the User Guide to remove passive voice d/13/04/2020`
+*   `budget 1000`
+    ```
+    ________________________________________________________________________________
+    ExpensiveLeh says -> Budget of $1000.00 set successfully!
+    ________________________________________________________________________________
+    ```
+    Sets the overall budget to $1000.
+
+*   `budget c/Food a/500`
+    ```
+    ________________________________________________________________________________
+    ExpensiveLeh says -> Budget of $500.00 set successfully for Food!
+    ________________________________________________________________________________
+    ```
+    Sets the food category budget to $500.
 
 ## FAQ
 
