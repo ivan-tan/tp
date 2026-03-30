@@ -30,7 +30,7 @@ public class ParserTest {
      */
     @Test
     public void parseListCommand_parsedCorrectly() throws ExpensiveLehException {
-        final String input = "list\n";
+        final String input = "list expenses\n";
         final Command result = parse(input);
         assertInstanceOf(ListCommand.class, result);
     }

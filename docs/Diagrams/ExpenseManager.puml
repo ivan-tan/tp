@@ -1,0 +1,145 @@
+@startuml ExpenseManager Class Diagram
+
+' Define skin settings for better appearance
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor AliceBlue
+    ArrowColor Black
+    BorderColor Black
+}
+
+' ExpenseManager class
+class ExpenseManager {
+    - expenses : ArrayList<Expense>
+    - budget : double
+    + ExpenseManager()
+    + ExpenseManager(expenses : ArrayList<Expense>, budget : double)
+    + addExpense(expense : Expense) : void
+    + deleteExpense(index : int) : Expense
+    + editExpense(index : int, category : String, name : String, value : Double, date : LocalDate) : void
+    + setBudget(budget : double) : void
+    + getBudget() : double
+    + getRemainingBudget() : double
+    + getExpense(index : int) : Expense
+    + getSize() : int
+    + isEmpty() : boolean
+    + getExpenses() : ArrayList<Expense>
+}
+
+' Abstract Expense class
+abstract class Expense {
+    - FORMATTER : DateTimeFormatter
+    # description : String
+    # amount : double
+    # date : LocalDate
+    + Expense(description : String, amount : double, date : LocalDate)
+    + Expense(description : String, amount : double)
+    + getDescription() : String
+    + getAmount() : double
+    + getDate() : LocalDate
+    + getFormattedDate() : String
+    + {abstract} getCategory() : String
+    + toString() : String
+}
+
+' Expense subclasses
+class Food {
+    + Food(description : String, amount : double, date : LocalDate)
+    + Food(description : String, amount : double)
+    + getCategory() : String
+}
+
+class Transport {
+    + Transport(description : String, amount : double, date : LocalDate)
+    + Transport(description : String, amount : double)
+    + getCategory() : String
+}
+
+class Groceries {
+    + Groceries(description : String, amount : double, date : LocalDate)
+    + Groceries(description : String, amount : double)
+    + getCategory() : String
+}
+
+class Others {
+    + Others(description : String, amount : double, date : LocalDate)
+    + Others(description : String, amount : double)
+    + getCategory() : String
+}
+
+' Abstract Command class
+abstract class Command {
+    + {abstract} execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+' Command subclasses
+class AddCommand {
+    - expense : Expense
+    + AddCommand(expense : Expense)
+    + execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+class DeleteCommand {
+    - index : int
+    + DeleteCommand(index : int)
+    + execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+class EditCommand {
+    - index : int
+    - category : String
+    - name : String
+    - value : Double
+    - date : LocalDate
+    + EditCommand(index : int, category : String, name : String, value : Double, date : LocalDate)
+    + execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+class ListCommand {
+    + ListCommand()
+    + execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+class BudgetCommand {
+    - value : double
+    + BudgetCommand(value : double)
+    + execute(expenses : ExpenseManager, ui : UI) : void
+}
+
+' Exception class
+class ExpensiveLehException {
+    + ExpensiveLehException(message : String)
+}
+
+' UI class (used by commands)
+class UI {
+    + showMessage(message : String) : void
+}
+
+' Relationships
+ExpenseManager "1" o-- "*" Expense : manages >
+ExpenseManager --> ExpensiveLehException : throws
+
+Expense <|-- Food
+Expense <|-- Transport
+Expense <|-- Groceries
+Expense <|-- Others
+
+Command <|-- AddCommand
+Command <|-- DeleteCommand
+Command <|-- EditCommand
+Command <|-- ListCommand
+Command <|-- BudgetCommand
+
+AddCommand "1" --> "1" Expense : uses >
+DeleteCommand --> ExpensiveLehException : throws
+EditCommand --> ExpensiveLehException : throws
+ListCommand --> ExpensiveLehException : throws
+BudgetCommand --> ExpensiveLehException : throws
+AddCommand --> ExpensiveLehException : throws
+
+Command --> ExpenseManager : uses >
+Command --> UI : uses >
+ExpensiveLehException --|> RuntimeException
+
+@enduml
