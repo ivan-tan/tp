@@ -1,0 +1,42 @@
+@startuml Edit Expense Sequence Diagram
+actor User
+participant "Parser" as Parser
+participant "EditCommand" as EditCmd
+participant "ExpenseManager" as EM
+participant "Expense" as Expense
+participant "Food" as Food
+participant "UI" as UI
+
+User -> Parser: expense edit INDEX /c CATEGORY /n NAME /v VALUE /d DATE
+activate Parser
+
+Parser -> EditCmd: new EditCommand(...)
+activate EditCmd
+deactivate Parser
+
+EditCmd -> EM: editExpense(...)
+activate EM
+
+EM -> Expense: get current values
+activate Expense
+Expense --> EM
+deactivate Expense
+
+EM -> Food: new Food(...)
+activate Food
+Food --> EM
+deactivate Food
+
+EM -> EM: expenses.set(index, newExpense)
+EM --> EditCmd
+
+deactivate EM
+
+EditCmd -> UI: showMessage("Expense updated!")
+activate UI
+UI --> User: Expense updated successfully!
+deactivate UI
+
+deactivate EditCmd
+
+@enduml

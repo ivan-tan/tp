@@ -1,0 +1,49 @@
+@startuml Add Expense Sequence Diagram
+' Define skin settings for better appearance
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    ParticipantBorderColor Black
+    LifeLineBorderColor Black
+}
+hide footbox
+
+actor User
+participant "Parser" as Parser
+participant "AddCommand" as AddCmd
+participant "ExpenseManager" as EM
+participant "Expense" as Expense
+participant "UI" as UI
+
+User -> Parser: expense add /c CATEGORY /n NAME /v VALUE /d DATE
+activate Parser
+
+Parser -> Expense: new Food()
+activate Expense
+Parser -> AddCmd: new AddCommand(expense, "expense")
+activate AddCmd
+deactivate Expense
+deactivate Parser
+
+AddCmd -> AddCmd: execute(Managers, UI)
+AddCmd -> EM: addExpense(expense)
+activate EM
+
+EM -> EM: expenses.add(expense)
+EM --> AddCmd
+
+deactivate EM
+
+AddCmd -> EM: getRemainingBudget()
+activate EM
+EM --> AddCmd
+deactivate EM
+
+AddCmd -> UI: showMessage("Expense added...")
+activate UI
+UI --> User: Expense added successfully!
+deactivate UI
+
+deactivate AddCmd
+
+@enduml
