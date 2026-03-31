@@ -56,7 +56,7 @@ public class Parser {
         case "delete":
             try {
                 if (partsBySpace.length < 3) {
-                    throw new ExpensiveLehException("Usage: delete expense INDEX or delete bookmark INDEX");
+                    throw new ExpensiveLehException("Usage: delete expense INDEX, delete loan INDEX, or delete bookmark INDEX");
                 }
 
                 String type = partsBySpace[1];
@@ -64,14 +64,16 @@ public class Parser {
 
                 if (type.equals("expense")) {
                     return new DeleteCommand(deleteIndex, "expense");
+                } else if (type.equals("loan")) {
+                    return new DeleteCommand(deleteIndex, "loan");
                 } else if (type.equals("bookmark")) {
                     return new DeleteCommand(deleteIndex, "bookmark");
                 } else {
-                    throw new ExpensiveLehException("Invalid delete type. Use 'expense' or 'bookmark'");
+                    throw new ExpensiveLehException("Invalid delete type. Use 'expense', 'loan', or 'bookmark'");
                 }
 
             } catch (IndexOutOfBoundsException e) {
-                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
+                throw new ExpensiveLehException("Please enter a valid integer from the list!");
             } catch (NumberFormatException e) {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
@@ -79,15 +81,6 @@ public class Parser {
         case "loans": // list all loans only
             return new ListCommand("loans");
 
-        case "paid":
-            try {
-                int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
-                return new DeleteCommand(deleteIndex, "loan");
-            } catch (IndexOutOfBoundsException e) {
-                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
-            } catch (NumberFormatException e) {
-                throw new ExpensiveLehException("Please enter a valid integer!");
-            }
 
         case "bookmark":
             try {
@@ -99,9 +92,11 @@ public class Parser {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
 
-        case "list": // either list budgets or list expenses
+        case "list": // either list budgets, list loans, or list expenses
             if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("budgets")) {
                 return new ListBudgetsCommand();
+            } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("loans")) {
+                return new ListCommand("loans");
             } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("bookmarks")) {
                 return new ListCommand("bookmarks");
             }
