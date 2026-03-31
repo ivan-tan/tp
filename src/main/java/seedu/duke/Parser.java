@@ -56,8 +56,7 @@ public class Parser {
         case "delete":
             try {
                 if (partsBySpace.length < 3) {
-                    throw new ExpensiveLehException("Usage: delete expense INDEX, delete bookmark INDEX, " +
-                            "delete loan INDEX");
+                    throw new ExpensiveLehException("Usage: delete expense INDEX or delete bookmark INDEX");
                 }
 
                 String type = partsBySpace[1];
@@ -67,14 +66,25 @@ public class Parser {
                     return new DeleteCommand(deleteIndex, "expense");
                 } else if (type.equals("bookmark")) {
                     return new DeleteCommand(deleteIndex, "bookmark");
-                } else if (type.equals("loan")) {
-                    return new DeleteCommand(deleteIndex, "loan");
                 } else {
-                    throw new ExpensiveLehException("Invalid delete type. Use 'expense' or 'bookmark' or 'loan'");
+                    throw new ExpensiveLehException("Invalid delete type. Use 'expense' or 'bookmark'");
                 }
 
             } catch (IndexOutOfBoundsException e) {
-                throw new ExpensiveLehException("Please enter a valid integer from the specified list!");
+                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
+            } catch (NumberFormatException e) {
+                throw new ExpensiveLehException("Please enter a valid integer!");
+            }
+
+        case "loans": // list all loans only
+            return new ListCommand("loans");
+
+        case "paid":
+            try {
+                int deleteIndex = Integer.parseInt(partsBySpace[1]) - 1;
+                return new DeleteCommand(deleteIndex, "loan");
+            } catch (IndexOutOfBoundsException e) {
+                throw new ExpensiveLehException("Please enter a valid integer from the expense list!");
             } catch (NumberFormatException e) {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
@@ -89,18 +99,14 @@ public class Parser {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
 
-        case "list":
+        case "list": // either list budgets or list expenses
             if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("budgets")) {
                 return new ListBudgetsCommand();
             } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("bookmarks")) {
                 return new ListCommand("bookmarks");
-            } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("loans")) {
-                return new ListCommand("loans");
-            } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("expenses")) {
-                return new ListCommand("expenses");
-            } else {
-                throw new ExpensiveLehException("Usage: list expenses, bookmarks, loans or budgets");
             }
+            return new ListCommand("expenses");
+
 
         case "search":
             try {
@@ -113,11 +119,20 @@ public class Parser {
                 throw new ExpensiveLehException("Search error: " + e.getMessage());
             }
 
-        case "rank": // either ranks loans or ranks expenses
-            if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("loans")) {
-                return new RankCommand("Loan");
+        case "rank":
+            if (partsBySpace.length < 2) {
+                throw new ExpensiveLehException("Please specify what to rank! Example: rank expenses OR rank loans");
             }
-            return new RankCommand("expense");
+
+            String rankType = partsBySpace[1].toLowerCase();
+
+            if (rankType.equals("expenses") || rankType.equals("expense")) {
+                return new RankCommand("expense");
+            } else if (rankType.equals("loans") || rankType.equals("loan")) {
+                return new RankCommand("loan");
+            } else {
+                throw new ExpensiveLehException("Invalid rank category! Example: rank expenses OR rank loans");
+            }
 
         case "help":
             return new HelpCommand();

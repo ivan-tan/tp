@@ -1,10 +1,7 @@
 # User Guide - Expense Search Feature
 
-## Introduction
-
 ExpensiveLeh is a CLI for managing your personal finances. Users can indicate their budget and add expenses into the app to track their budget situation. This guide documents the Expense data model and Search functionality.
 
-## Quick Start
 
 1. Ensure that you have Java 17 or above installed.
 2. Download the latest version of `ExpensiveLeh` from the project repository.
@@ -20,7 +17,7 @@ Format: `search KEYWORD`
 * Partial matches are included (e.g., searching "joy" will find "Jollibee")
 * Results are displayed in a formatted table with index, category, name, value, and date
 
-`search jollibee`
+Example: `search jollibee`
 
 ExpensiveLeh output:
 ```
@@ -74,10 +71,16 @@ ________________________________________________________________
 
 ### Deleting a loan: `delete`
 Deletes the specified loan.
-Format: `delete INDEX`
-* Deletes the person at the specified `INDEX`. 
+
+Format: `delete loan INDEX`
+* Deletes the person at the specified `INDEX`.
 * The `INDEX` refers to the index number showed in the displayed loan list.
 * The index must be a **positive intege**r 1,2,3 ...
+
+Example: `delete loan 1`
+
+Output:
+`ExpensiveLeh says -> Loan ID 1 for Kim ($2333.00) deleted!`
 
 ### Managing budgets : `budget`
 
@@ -89,13 +92,8 @@ Format: `budget AMOUNT` or `budget c/CATEGORY a/AMOUNT`
 *   Sets a category-specific budget if `c/CATEGORY a/AMOUNT` format is used.
 *   Budget amounts must be positive.
 
-`delete loan 1`
-
-Output:
-`ExpensiveLeh says -> Loan ID 1 for Kim ($2333.00) deleted!`
-
 ### Saving Data
-Loans, expenses, bookmarks and budgets are automatically saved in the disk. There is no need to save manually. 
+Loans, expenses, bookmarks and budgets are automatically saved in the disk. There is no need to save manually.
 
 Examples:
 
@@ -139,7 +137,6 @@ Index  Category     Name                 Value      Date
 Remaining budget: $54.00
 ________________________________________________________________
 ```
-Format: `add c/loan n/NAME a/AMOUNT [date/DATE]`
 
 Example: `list loans`
 
@@ -154,7 +151,7 @@ Total Owed to You: $30.00
 ________________________________________________________________
 ```
 
-Example: `list loans`
+Example: `list bookmarks`
 
 Output:
 ```
@@ -221,7 +218,74 @@ To exit the program, use 'exit'
 ________________________________________________________________
 ```
 
-## FAQ
+### <u>Ranking expenses</u>
+Displays a visual bar chart ranking all your spending categories from highest to lowest.
+
+Format: `rank expenses`
+
+Output:
+```text
+  ExpensiveLeh says -> Here is your spending ranked by category:
+
+  1. XXX            [$  300.00] ████████████████████
+  2. YYY            [$  150.00] ██████████
+  3. AAA            [$   75.00] █████
+  4. BBB            [$   10.00] █
+  ```
+Example: `rank expenses`
+
+```text
+  ExpensiveLeh says -> Here is your spending ranked by category:
+
+  1. Food            [$  300.00] ████████████████████
+  2. Transport       [$  150.00] ██████████
+  3. Groceries       [$   75.00] █████
+  4. Others          [$   10.00] █
+  ```
+
+
+### <u>Editing a loan</u>
+Edits an existing loan record in your loans list.
+
+Format: `edit loan INDEX [n/PERSON_NAME] [a/AMOUNT] [d/DATE]`
+* Edits the existing loan at the specified INDEX. The index refers to the index number shown in the displayed loans list.
+* At least one of the optional fields must be provided.
+* Existing values will be updated to the input values.
+
+Output: Loan at index INDEX updated successfully!
+
+Examples:
+* edit loan 1 n/Jonathan a/55.00
+* Loan at index 1 updated successfully!
+
+### <u>Ranking loans</u>
+Displays a visual bar chart ranking who owes you the most money, from highest to lowest.
+
+Format: `rank loans`
+
+Output:
+```text
+  1. AAA            [$  300.00] ████████████████████
+  2. BBB            [$  150.00] ██████████
+  3. CCC            [$   75.00] █████
+  4. DDD            [$   10.00] █
+  ```
+Example: `rank loans`
+```text
+  ExpensiveLeh says -> Here are your loans ranked by person:
+
+  1. Ali            [$  300.00] ████████████████████
+  2. Bob            [$  150.00] ██████████
+  3. Eli            [$   75.00] █████
+  4. Lex            [$   10.00] █
+  ```
+
+### <u>Exit</u>
+Exits the program.
+
+Format: exit
+
+### <u>Frequently Asked Questions</u>
 
 **Q**: Is the search case-sensitive?
 
@@ -259,3 +323,4 @@ ________________________________________________________________
 | Rank loans               | `rank loans`                                                 | `rank loans`                                 |
 | Help                     | `help`                                                       | `help`                                       |
 | Exit                     | `exit`                                                       | `exit`                                       |
+

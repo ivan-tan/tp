@@ -21,7 +21,7 @@ public class RankCommand extends Command {
     public void execute(Managers managers, UI ui) throws ExpensiveLehException {
         Map<String, Double> unsortedTotals;
 
-        if (type.equals("loan")) {
+        if ("loan".equals(type)) {
             LoanManager loanManager = managers.getLoanManager();
             if (loanManager.isEmpty()) {
                 ui.showMessage("No loans added yet!");
@@ -29,13 +29,16 @@ public class RankCommand extends Command {
             }
             unsortedTotals = loanManager.getPersonTotals();
 
-        } else {
+        } else if ("expense".equals(type)) {
             ExpenseManager expenseManager = managers.getExpenseManager();
             if (expenseManager.isEmpty()) {
                 ui.showMessage("No expenses added yet!");
                 return;
             }
             unsortedTotals = expenseManager.getCategoryTotals();
+
+        } else {
+            throw new ExpensiveLehException("Unknown rank type encountered.");
         }
 
         List<Map.Entry<String, Double>> rankedList = new ArrayList<>(unsortedTotals.entrySet());
