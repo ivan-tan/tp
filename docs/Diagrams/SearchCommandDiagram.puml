@@ -1,0 +1,86 @@
+@startuml
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+actor User
+participant ":ExpensiveLeh" as Main
+participant ":Parser" as Parser
+participant "s:SearchCommand" as SearchCommand
+participant ":ExpenseManager" as ExpenseManager
+participant "e:Expense" as Expense
+participant ":UI" as UI
+
+User -> Main : inputs "search KEYWORD"
+activate Main
+
+Main -> Parser : readCommand("search KEYWORD")
+activate Parser
+
+create SearchCommand
+Parser -> SearchCommand : new SearchCommand(keyword)
+activate SearchCommand
+SearchCommand --> Parser : s
+deactivate SearchCommand
+
+Parser --> Main : s
+deactivate Parser
+
+Main -> SearchCommand : execute(managers, ui)
+activate SearchCommand
+
+SearchCommand -> ExpenseManager : searchByKeyword(keyword)
+activate ExpenseManager
+
+note right of ExpenseManager
+    Iterates through all expenses
+    and checks if description or
+    category contains keyword
+    (case-insensitive)
+end note
+
+loop for each Expense e in expenses
+    ExpenseManager -> Expense : getDescription()
+    activate Expense
+    Expense --> ExpenseManager : description
+    deactivate Expense
+
+    ExpenseManager -> Expense : getCategory()
+    activate Expense
+    Expense --> ExpenseManager : category
+    deactivate Expense
+
+    alt description or category contains keyword
+        ExpenseManager -> Expense : add to results
+    end
+end
+
+ExpenseManager --> SearchCommand : matchedExpenses
+deactivate ExpenseManager
+
+alt matchedExpenses is empty
+    SearchCommand -> UI : showMessage("No expenses found...")
+    activate UI
+    UI --> SearchCommand
+    deactivate UI
+else matchedExpenses has results
+    note right of SearchCommand
+        Formats matched expenses
+        as a formatted table with
+        Index, Category, Name,
+        Value, and Date columns
+    end note
+
+    SearchCommand -> UI : showMessage(formattedResults)
+    activate UI
+    UI --> SearchCommand
+    deactivate UI
+end
+
+SearchCommand --> Main
+deactivate SearchCommand
+
+Main --> User : displays search results
+deactivate Main
+
+@enduml
+

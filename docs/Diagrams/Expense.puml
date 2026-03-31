@@ -1,0 +1,52 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+package seedu.duke {
+    abstract class Expense {
+        # description : String
+        # amount : double
+        # date : LocalDate
+        + Expense(description : String, amount : double, date : LocalDate)
+        + Expense(description : String, amount : double)
+        + getDescription() : String
+        + getAmount() : double
+        + getDate() : LocalDate
+        + getFormattedDate() : String
+        + {abstract} getCategory() : String
+        + toString() : String
+    }
+
+    class Food extends Expense {
+        + Food(description : String, amount : double, date : LocalDate)
+        + Food(description : String, amount : double)
+        + getCategory() : String
+    }
+
+    class Transport extends Expense {
+        + Transport(description : String, amount : double, date : LocalDate)
+        + Transport(description : String, amount : double)
+        + getCategory() : String
+    }
+
+    class Groceries extends Expense {
+        + Groceries(description : String, amount : double, date : LocalDate)
+        + Groceries(description : String, amount : double)
+        + getCategory() : String
+    }
+
+    class Others extends Expense {
+        + Others(description : String, amount : double, date : LocalDate)
+        + Others(description : String, amount : double)
+        + getCategory() : String
+    }
+}
+
+note right of Expense
+    Expense is an abstract superclass
+    that defines common properties
+    and methods for all expense types.
+    Subclasses must implement getCategory().
+end note
+
+@enduml
+
