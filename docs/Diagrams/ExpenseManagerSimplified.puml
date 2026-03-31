@@ -1,0 +1,67 @@
+@startuml ExpenseManager Class Diagram
+' Define skin settings for better appearance
+skinparam classAttributeIconSize 0
+hide circle
+hide empty members
+
+skinparam class {
+    BackgroundColor AliceBlue
+    ArrowColor Black
+    BorderColor Black
+}
+
+' ExpenseManager class
+class ExpenseManager {
+    - budget : double
+    + addExpense(...) : void
+    + deleteExpense(...) : Expense
+    + ...()
+}
+
+' Abstract Expense class
+abstract class Expense {
+    # description : String
+    # amount : double
+    # date : LocalDate
+    + {abstract} getCategory() : String
+    + ...()
+}
+
+' Representative Expense subclasses
+class Food
+class Transport
+class Groceries
+class Others
+
+' Abstract Command class
+abstract class Command {
+    + {abstract} execute(...) : void
+}
+
+' Representative Command subclasses
+class AddCommand
+class DeleteCommand
+note left of DeleteCommand: EditCommand, ListCommand,\nand BudgetCommand\nomitted for simplicity
+
+' UI class
+class UI {
+    + showMessage(...) : void
+}
+
+' Relationships
+ExpenseManager "1" o--> "*" Expense : manages >
+
+Expense <|-- Food
+Expense <|-- Transport
+Expense <|-- Groceries
+Expense <|-- Others
+
+Command <|-- AddCommand
+Command <|-- DeleteCommand
+
+Command ..> ExpenseManager : uses >
+Command ..> UI : uses >
+
+AddCommand ..> Expense : creates >
+
+@enduml

@@ -1,7 +1,7 @@
 @startuml ExpenseManager Class Diagram
-
 ' Define skin settings for better appearance
 skinparam classAttributeIconSize 0
+
 skinparam class {
     BackgroundColor AliceBlue
     ArrowColor Black
@@ -106,11 +106,6 @@ class BudgetCommand {
     + execute(expenses : ExpenseManager, ui : UI) : void
 }
 
-' Exception class
-class ExpensiveLehException {
-    + ExpensiveLehException(message : String)
-}
-
 ' UI class (used by commands)
 class UI {
     + showMessage(message : String) : void
@@ -118,7 +113,6 @@ class UI {
 
 ' Relationships
 ExpenseManager "1" o-- "*" Expense : manages >
-ExpenseManager --> ExpensiveLehException : throws
 
 Expense <|-- Food
 Expense <|-- Transport
@@ -132,14 +126,8 @@ Command <|-- ListCommand
 Command <|-- BudgetCommand
 
 AddCommand "1" --> "1" Expense : uses >
-DeleteCommand --> ExpensiveLehException : throws
-EditCommand --> ExpensiveLehException : throws
-ListCommand --> ExpensiveLehException : throws
-BudgetCommand --> ExpensiveLehException : throws
-AddCommand --> ExpensiveLehException : throws
 
 Command --> ExpenseManager : uses >
 Command --> UI : uses >
-ExpensiveLehException --|> RuntimeException
 
 @enduml

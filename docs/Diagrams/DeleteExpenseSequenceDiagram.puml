@@ -1,0 +1,30 @@
+@startuml Delete Expense Sequence Diagram
+actor User
+participant "Parser" as Parser
+participant "DeleteCommand" as DeleteCmd
+participant "ExpenseManager" as EM
+participant "UI" as UI
+
+User -> Parser: expense delete INDEX
+activate Parser
+
+Parser -> DeleteCmd: new DeleteCommand(index, "expense")
+activate DeleteCmd
+deactivate Parser
+
+DeleteCmd -> EM: deleteExpense(index)
+activate EM
+
+EM -> EM: expenses.remove(index)
+EM --> DeleteCmd
+
+deactivate EM
+
+DeleteCmd -> UI: showMessage("Expense deleted!")
+activate UI
+UI --> User: Expense deleted successfully!
+deactivate UI
+
+deactivate DeleteCmd
+
+@enduml

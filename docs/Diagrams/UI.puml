@@ -1,0 +1,71 @@
+@startuml UI_Class_Diagram
+' Define skin settings to match ExpenseManager
+skinparam classAttributeIconSize 0
+
+skinparam class {
+    BackgroundColor AliceBlue
+    ArrowColor Black
+    BorderColor Black
+}
+
+' The core UI Class
+class UI {
+    - in : Scanner
+    + lineSeparator : String
+    + UI()
+    + showWelcome() : void
+    + printLine() : void
+    + readCommand() : String
+    + showError(message : String) : void
+    + showMessage(message : String) : void
+    - generateBar(categoryAmount : double, highestAmount : double) : String
+    + showRanking(rankedList : List<Map.Entry<String, Double>>, type : String) : void
+}
+
+' Java Util Scanner
+class Scanner {
+    + nextLine() : String
+}
+
+' Main Application Class
+class ExpensiveLeh {
+    + main(args : String[]) : void
+}
+
+' Abstract Command Class
+abstract class Command {
+    + {abstract} execute(managers : Managers, ui : UI) : void
+}
+
+' Specific Command (as an example of usage)
+class RankCommand {
+    - type : String
+    + RankCommand(type : String)
+    + execute(managers : Managers, ui : UI) : void
+}
+
+' Relationships
+UI "1" *-- "1" Scanner : encapsulates >
+ExpensiveLeh --> "1" UI : initializes >
+Command --> "1" UI : outputs to >
+Command <|-- RankCommand : extends
+
+note bottom of UI
+  The central class handling CLI
+  interactions. It acts as the bridge
+  between the user and the logic.
+end note
+
+note right of Command
+  All concrete command subclasses
+  (AddCommand, DeleteCommand, etc.)
+  depend on the UI to display
+  feedback to the user.
+end note
+
+note bottom of RankCommand
+  Example of command subclass called
+  Other subclasses omitted for simplicity.
+end note
+
+@enduml
