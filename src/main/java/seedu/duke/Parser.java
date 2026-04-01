@@ -79,10 +79,6 @@ public class Parser {
                 throw new ExpensiveLehException("Please enter a valid integer!");
             }
 
-        case "loans": // list all loans only
-            return new ListCommand("loans");
-
-
         case "bookmark":
             try {
                 int bookmarkIndex = Integer.parseInt(partsBySpace[1]) - 1;
@@ -100,8 +96,11 @@ public class Parser {
                 return new ListCommand("loans");
             } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("bookmarks")) {
                 return new ListCommand("bookmarks");
+            } else if (partsBySpace.length > 1 && partsBySpace[1].equalsIgnoreCase("expenses")) {
+                return new ListCommand("expenses");
+            } else {
+                throw new ExpensiveLehException("List error! Please use: list expenses/budgets/loans/bookmarks");
             }
-            return new ListCommand("expenses");
 
 
         case "search":
@@ -180,17 +179,18 @@ public class Parser {
 
             if (name == null || name.trim().isEmpty()) {
                 throw new ExpensiveLehException(
-                        "Expense name cannot be empty. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "NAME cannot be empty. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount == null) {
                 throw new ExpensiveLehException(
-                        "Expense amount is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "AMOUNT is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount <= 0) {
                 throw new ExpensiveLehException("Expense amount must be positive.");
             }
             if (category == null || category.trim().isEmpty()) {
-                category = "Others";
+                throw new ExpensiveLehException(
+                        "Valid CATEGORY required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
 
             Expense expense;
@@ -206,9 +206,12 @@ public class Parser {
                 break;
             case "loan":
                 expense = new Loan(name, amount, date);
-                return new AddCommand((Loan) expense, "loan");
-            default:
+                return new AddCommand(expense, "loan");
+            case "others":
                 expense = new Others(name, amount, date);
+                break;
+            default:
+                throw new ExpensiveLehException("category must be food, transport, groceries, others or loan");
             }
 
             return new AddCommand(expense, "expense");
@@ -326,6 +329,11 @@ public class Parser {
                 throw new ExpensiveLehException(
                         "Category is required. Usage: budget c/CATEGORY a/AMOUNT");
             }
+            if (category.equalsIgnoreCase("loan")) {
+                throw new ExpensiveLehException(
+                        "Loans cannot have a budget. " +
+                                "Only expenses (food, groceries, transport, others) can have budgets.");
+            }
             if (amount == null) {
                 throw new ExpensiveLehException(
                         "Amount is required. Usage: budget c/CATEGORY a/AMOUNT");
@@ -334,11 +342,16 @@ public class Parser {
                 throw new ExpensiveLehException("Budget amount must be positive.");
             }
 
-            return new CategoryBudgetCommand(category, amount);
+            if (category.equalsIgnoreCase("food") || category.equalsIgnoreCase("groceries")
+                    || category.equalsIgnoreCase("transport")
+                    || category.equalsIgnoreCase("others")) {
+                return new CategoryBudgetCommand(category, amount);
 
+            } else {
+                throw new ExpensiveLehException(
+                        "Please specify category of either food, groceries, transport or others");
+            }
         } catch (NumberFormatException e) {
-            throw new ExpensiveLehException("Invalid amount format. Please enter a valid number.");
-        } catch (Exception e) {
             throw new ExpensiveLehException(
                     "Invalid budget category command format. Usage: budget c/CATEGORY a/AMOUNT");
         }

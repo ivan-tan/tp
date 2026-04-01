@@ -6,7 +6,10 @@ import seedu.duke.Food;
 import seedu.duke.Transport;
 import seedu.duke.Groceries;
 import seedu.duke.Others;
+import seedu.duke.ExpensiveLehException;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Storage {
+    private static Logger logger = Logger.getLogger("logger");
     private String filePath;
 
     public static class StorageData {
@@ -88,18 +92,19 @@ public class Storage {
             String[] parts = line.split(" \\| ");
             if (parts[0].equals("BUDGET")) {
                 loadedBudget = Double.parseDouble(parts[1]);
+                if (loadedBudget < 0) {
+                    throw new IOException("budget loaded is negative");
+                }
                 continue;
             }
 
             if (parts[0].equals("CATEGORY_BUDGET")) {
                 String category = parts[1];
                 double amount = Double.parseDouble(parts[2]);
-
+                loadedCategoryBudgets.put(category.toLowerCase(), amount);
                 if (amount < 0) {
                     throw new IOException("Invalid category budget in file: category budget cannot be negative");
                 }
-
-                loadedCategoryBudgets.put(category.toLowerCase(), amount);
                 continue;
             }
 
@@ -124,9 +129,12 @@ public class Storage {
             case "G":
                 expense = new Groceries(description, amount, date);
                 break;
-            default:
+            case "O":
                 expense = new Others(description, amount, date);
                 break;
+            default:
+                logger.log(Level.WARNING, "attempted to save unknown category to storage: " + category);
+                throw new ExpensiveLehException("error in saving task");
             }
             loadedExpenses.add(expense);
         }

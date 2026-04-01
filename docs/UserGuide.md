@@ -306,8 +306,8 @@ ________________________________________________________________
 Shows all existing expenses, loans or bookmarks in the list, as well as the remaining amount in the category budgets.
 
 Format: `list [TYPE]` where TYPE can be `expenses`, `loans`, `bookmarks`, or `budgets`
-* Use `list` or `list expenses` to display all expenses with their category, name, value, and date.
-* Use `list loans` or `loans` to display all recorded loans with their name, value, and date.
+* Use `list expenses` to display all expenses with their category, name, value, and date.
+* Use `list loans` to display all recorded loans with their name, value, and date.
 * Use `list bookmarks` to display all saved bookmarks with their category, name, value, and date.
 * Use `list budgets` to display all the category budgets with their remaining amount.
 

@@ -43,10 +43,6 @@ public class LoanManager {
         return loans;
     }
 
-    public int getSize() {
-        return loans.size();
-    }
-
     public boolean isEmpty() {
         return loans.isEmpty();
     }
