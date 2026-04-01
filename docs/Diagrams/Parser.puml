@@ -6,15 +6,29 @@ class Parser {
     + readCommand() : Command
     - parseAddCommand(line : String) : Command
     - parseEditCommand(line : String) : Command
+    - parseBudgetCategoryCommand(line : String) : Command
 }
 
 abstract class Command {
-    + execute(expenses : ExpenseManager, ui : UI) : void
+    + execute(managers : Managers, ui : UI) : void
+}
+
+class Managers {
+    - expenseManager : ExpenseManager
+    - loanManager : LoanManager
+    - bookmark : Bookmark
+    + Managers(em : ExpenseManager, lm : LoanManager, bookmark : Bookmark)
+    + getExpenseManager() : ExpenseManager
+    + getLoanManager() : LoanManager
+    + getBookmark() : Bookmark
 }
 
 class AddCommand {
-    - expense : Expense
-    + AddCommand(expense : Expense) : void
+    - itemToAdd : Object
+    - type : String
+    + AddCommand(expense : Expense, type : String)
+    + AddCommand(loan : Loan, type : String)
+    + AddCommand(index : int, type : String)
 }
 
 class EditCommand {
@@ -28,16 +42,49 @@ class EditCommand {
 
 class DeleteCommand {
     - index : int
-    + DeleteCommand(index : int) : void
+    - type : String
+    + DeleteCommand(index : int, type : String)
+    - deleteExpense(expenses : ExpenseManager, ui : UI) : void
+    - deleteLoan(loanManager : LoanManager, ui : UI) : void
+    - deleteBookmark(bookmark : Bookmark, ui : UI) : void
 }
 
 class BudgetCommand {
-    - amount : double
+    - value : double
     + BudgetCommand(value : double) : void
 }
 
-class ListCommand {
+class CategoryBudgetCommand {
+    - category : String
+    - amount : double
+    + CategoryBudgetCommand(category : String, amount : double)
+}
 
+class ListCommand {
+    - listType : String
+    + ListCommand(listType : String)
+    - listExpenses(expenses : ExpenseManager, ui : UI) : void
+    - listLoans(loanManager : LoanManager, ui : UI) : void
+    - listBookmarks(bookmark : Bookmark, ui : UI) : void
+}
+
+class ListBudgetsCommand {
+    - capitalize(str : String) : String
+}
+
+class BookmarkCommand {
+    - index : int
+    + BookmarkCommand(index : int)
+}
+
+class SearchCommand {
+    - keyword : String
+    + SearchCommand(keyword : String)
+}
+
+class RankCommand {
+    - type : String
+    + RankCommand(type : String)
 }
 
 class HelpCommand {
@@ -78,9 +125,15 @@ Command <|-- AddCommand
 Command <|-- EditCommand
 Command <|-- DeleteCommand
 Command <|-- BudgetCommand
+Command <|-- CategoryBudgetCommand
 Command <|-- ListCommand
+Command <|-- ListBudgetsCommand
+Command <|-- BookmarkCommand
+Command <|-- SearchCommand
+Command <|-- RankCommand
 Command <|-- HelpCommand
 Command <|-- ExitCommand
+
 Expense <|-- Food
 Expense <|-- Transport
 Expense <|-- Groceries
@@ -89,6 +142,15 @@ Expense <|-- Others
 ' Relationships
 Parser --> Command : creates
 Parser --> ExpensiveLehException : throws
+
+Command --> Managers
+Command --> UI
+
 AddCommand --> Expense
+AddCommand --> Loan
+
+Managers --> ExpenseManager
+Managers --> LoanManager
+Managers --> Bookmark
 
 @enduml

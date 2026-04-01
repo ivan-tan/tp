@@ -18,7 +18,7 @@ public class DeleteCommand extends Command {
         if (type.equalsIgnoreCase("loan")) {
             deleteLoan(manager.getLoanManager(), ui);
         } else if (type.equalsIgnoreCase("bookmark")) {
-            deleteBookmarks(manager.getBookmark(), ui);
+            deleteBookmark(manager.getBookmark(), ui);
         } else {
             deleteExpense(manager.getExpenseManager(), ui);
         }
@@ -40,7 +40,7 @@ public class DeleteCommand extends Command {
                 + " ($" + String.format("%.2f", removedLoan.getAmount()) + ") deleted!");
     }
 
-    private void deleteBookmarks(Bookmark bookmark, UI ui) throws ExpensiveLehException {
+    private void deleteBookmark(Bookmark bookmark, UI ui) throws ExpensiveLehException {
         Expense removedBookmark = bookmark.getBookmark(index);
         bookmark.removeBookmark(index);
 

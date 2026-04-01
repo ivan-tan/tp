@@ -26,6 +26,31 @@ As illustrated in the class diagram above, the `UI` component acts as the centra
 * **Reading Input:** The `readCommand()` method is the primary input portal, utilizing the scanner to capture raw user input from the terminal.
 * **Simple Output:** The `showWelcome()`, `showMessage()`, and `showError()` methods provide simple, persona-aware feedback (e.g., using the "ExpensiveLeh says ->" prefix or wrapping in line separators) for greetings, success messages, and error notifications.
 * **Complex Data Display:** The `showRanking()` method handles the advanced formatting of complex data structures (specifically, creating the visual ASCII bar charts from sorted lists of category or loan totals) before outputting them. It leverages the private `generateBar()` method as an internal helper.
+
+### Logic component
+
+API: `Parser.java`
+
+Here is the class diagram of the `Parser` class of the `Logic` component:
+![Parser Class Diagram](Diagrams/ParserClassDiagram.png)
+
+The sequence diagram below illustrates the interactions within the Logic component.
+![readCommand Sequence Diagram](Diagrams/ReadCommandSequenceDiagram.png)
+
+How the Logic component works:
+
+* When `ExpensiveLeh` is called upon to execute a command, the input is passed to the `Parser` object via `readCommand()`, which reads and tokenises the raw input string.
+* This results in `Parser` returning a `Command` subclass object, such as `AddCommand`, back to `ExpensiveLeh`.
+* `ExpensiveLeh` executes the command by calling `command.execute(managers, ui)`. The command interacts with Managers to carry out its task (e.g. to add an expense).
+* After execution, `ExpensiveLeh` calls `storage.save(...)` to maintain the updated data. If parsing fails at any point, an `ExpensiveLehException` is thrown and displayed to the user via the `UI`.
+
+How the parsing works:
+
+* When called upon to parse a user command, the `Parser` class reads the first token of the input as the command keyword and switches on it to determine which `Command` subclass to instantiate.
+* For commands with complex arguments, Parser delegates to a private helper method (`parseAddCommand()`, `parseEditCommand()`, or `parseBudgetCategoryCommand())`, which extracts prefixed parameters (`c/`, `n/`, `a/`, `d/`) and returns the appropriate `Command` object.
+* All `Command` subclasses (e.g. `AddCommand`, `DeleteCommand`, `EditCommand`) inherit from the `Command` abstract class so that they can be treated similarly where possible.
+* This allows `ExpensiveLeh` to call `command.execute(managers, ui)` uniformly regardless of which subclass it holds.
+
 ### ExpenseManager
 
 The `ExpenseManager` is responsible for managing expenses and budgets:

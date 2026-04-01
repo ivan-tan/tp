@@ -5,14 +5,6 @@ skinparam SequenceMessageAlignment center
 actor User
 participant Parser
 participant Command
-participant "ExitCommand" as Exit
-participant "BudgetCommand" as Budget
-participant "AddCommand" as Add
-participant "EditCommand" as Edit
-participant "DeleteCommand" as Delete
-
-participant "ListCommand" as List
-participant "HelpCommand" as Help
 
 User -> Parser : readCommand()
 activate Parser
@@ -22,17 +14,22 @@ Parser -> Parser : read input
 Parser -> Parser : split input
 
 alt command == "exit"
-    Parser -> Exit : new ExitCommand()
+    Parser -> Exit ** : new ExitCommand()
     activate Exit
-    Exit --> Parser : return ExitCommand
+    Exit --> Parser
     deactivate Exit
 
 else command == "budget"
-    Parser -> Parser : parse amount
-    alt valid amount
-        Parser -> Budget : new BudgetCommand(amount)
+    alt contains c/ and a/
+        Parser -> Parser : parseBudgetCategoryCommand()
+        Parser -> CatBudget ** : new CategoryBudgetCommand(category, amount)
+        activate CatBudget
+        CatBudget --> Parser
+        deactivate CatBudget
+    else valid number
+        Parser -> Budget ** : new BudgetCommand(amount)
         activate Budget
-        Budget --> Parser : return BudgetCommand
+        Budget --> Parser
         deactivate Budget
     else invalid
         Parser --> User : throw ExpensiveLehException
@@ -41,47 +38,129 @@ else command == "budget"
 else command == "add"
     Parser -> Parser : parseAddCommand(line)
     activate Parser
-    Parser -> Parser : extract c/, n/, a/, d/
-    Parser -> Add : new AddCommand(expense)
-    activate Add
-    Add --> Parser : return AddCommand
-    deactivate Add
+
+    alt add bookmark
+        Parser -> Add ** : new AddCommand(index, "bookmark")
+        activate Add
+        Add --> Parser
+        deactivate Add
+
+    else c/loan
+        Parser -> Add ** : new AddCommand(loan, "loan")
+        activate Add
+        Add --> Parser
+        deactivate Add
+
+    else c/food
+        Parser -> Add ** : new AddCommand(food, "expense")
+        activate Add
+        Add --> Parser
+        deactivate Add
+
+    else c/transport
+        Parser -> Add ** : new AddCommand(transport, "expense")
+        activate Add
+        Add --> Parser
+        deactivate Add
+
+    else c/groceries
+        Parser -> Add ** : new AddCommand(groceries, "expense")
+        activate Add
+        Add --> Parser
+        deactivate Add
+
+    else add others (default)
+        Parser -> Add ** : new AddCommand(others, "expense")
+        activate Add
+        Add --> Parser
+        deactivate Add
+    end
+
     deactivate Parser
 
 else command == "edit"
     Parser -> Parser : parseEditCommand(line)
     activate Parser
-    Parser -> Parser : extract index + fields
-    Parser -> Edit : new EditCommand()
+    Parser -> Edit ** : new EditCommand(index, ..., type)
     activate Edit
-    Edit --> Parser : return EditCommand
+    Edit --> Parser
     deactivate Edit
     deactivate Parser
 
 else command == "delete"
-    Parser -> Parser : parse index
-    alt valid index
-        Parser -> Delete : new DeleteCommand(index)
+    alt type == "expense"
+        Parser -> Delete ** : new DeleteCommand(index, "expense")
         activate Delete
-        Delete --> Parser : return DeleteCommand
+        Delete --> Parser
         deactivate Delete
-    else invalid
+    else type == "loan"
+        Parser -> Delete ** : new DeleteCommand(index, "loan")
+        activate Delete
+        Delete --> Parser
+        deactivate Delete
+    else type == "bookmark"
+        Parser -> Delete ** : new DeleteCommand(index, "bookmark")
+        activate Delete
+        Delete --> Parser
+        deactivate Delete
+    else invalid type
         Parser --> User : throw ExpensiveLehException
     end
 
-else command == "list"
-    Parser -> List : new ListCommand()
+else command == "loans"
+    Parser -> List ** : new ListCommand("loans")
     activate List
-    List --> Parser : return ListCommand
+    List --> Parser
     deactivate List
 
+else command == "bookmark"
+    Parser -> Bookmark ** : new BookmarkCommand(index)
+    activate Bookmark
+    Bookmark --> Parser
+    deactivate Bookmark
+
+else command == "list"
+    alt type == "expense"
+        Parser -> List ** : new ListCommand("expenses")
+        activate List
+        List --> Parser
+        deactivate List
+    else type == "loans"
+        Parser -> List ** : new ListCommand("loans")
+        activate List
+        List --> Parser
+        deactivate List
+    else type == "bookmarks"
+        Parser -> List ** : new ListCommand("bookmarks")
+        activate List
+        List --> Parser
+        deactivate List
+    else type == "budgets"
+        Parser -> ListBudgets ** : new ListBudgetsCommand()
+        activate ListBudgets
+        ListBudgets --> Parser
+        deactivate ListBudgets
+    end
+
+else command == "search"
+    Parser -> Search ** : new SearchCommand(keyword)
+    activate Search
+    Search --> Parser
+    deactivate Search
+
+else command == "rank"
+    Parser -> Rank ** : new RankCommand(type)
+    activate Rank
+    Rank --> Parser
+    deactivate Rank
+
 else command == "help"
-    Parser -> Help : new HelpCommand()
+    Parser -> Help ** : new HelpCommand()
     activate Help
-    Help --> Parser : return HelpCommand
+    Help --> Parser
     deactivate Help
 
-else unknown command
+else unknown
     Parser --> User : throw ExpensiveLehException
 end
 
