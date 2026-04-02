@@ -51,6 +51,62 @@ How the parsing works:
 * All `Command` subclasses (e.g. `AddCommand`, `DeleteCommand`, `EditCommand`) inherit from the `Command` abstract class so that they can be treated similarly where possible.
 * This allows `ExpensiveLeh` to call `command.execute(managers, ui)` uniformly regardless of which subclass it holds.
 
+### Expense Superclass
+
+The `Expense` class is an abstract superclass that represents a generic financial transaction. It uses inheritance to support different expense categories while maintaining a common interface.
+
+**Design Structure:**
+
+The `Expense` class provides a unified structure for all types of expenses with the following characteristics:
+
+- **Protected Attributes:**
+  - `description: String` - The name or description of the expense
+  - `amount: double` - The monetary value of the expense
+  - `date: LocalDate` - When the expense occurred (defaults to today if not specified)
+
+- **Core Methods:**
+  - `getDescription()`: Returns the expense description
+  - `getAmount()`: Returns the expense amount
+  - `getDate()`: Returns the expense date as a LocalDate object
+  - `getFormattedDate()`: Returns the date formatted as "dd-MM-yyyy"
+  - `getCategory()`: Abstract method implemented by subclasses to return the category name
+  - `toString()`: Provides a formatted string representation of the expense
+
+**Concrete Subclasses:**
+
+The following concrete subclasses extend `Expense` to represent different expense categories:
+- `Food`: Represents food and dining expenses
+- `Transport`: Represents transportation expenses
+- `Groceries`: Represents grocery and household item expenses
+- `Others`: Represents expenses that don't fit other categories
+
+Each subclass implements the `getCategory()` method to return its specific category name.
+
+**Design Rationale:**
+
+Using an abstract superclass provides several benefits:
+1. **Polymorphism**: All expenses can be treated uniformly via the `Expense` interface, regardless of category
+2. **Code Reuse**: Common functionality (date formatting, getters) is defined once in the superclass
+3. **Extensibility**: New expense categories can be added by creating new subclasses without modifying existing code
+4. **Type Safety**: Each expense has a fixed category determined by its class type, preventing invalid category strings
+
+**Example:**
+
+When the user adds a food expense with `add c/Food n/Lunch a/10.50`, the parser creates a `Food` object:
+```java
+Expense lunch = new Food("Lunch", 10.50);
+```
+
+Note: The `Expense` class provides two constructor overloads:
+- `Expense(String description, double amount, LocalDate date)` - Allows specifying a custom date
+- `Expense(String description, double amount)` - Defaults to today's date via `LocalDate.now()`
+
+This expense can then be added to the `ExpenseManager`'s collection and treated as a generic `Expense` object, while still maintaining its specific `Food` category identity through the `getCategory()` method.
+
+![Expense Class Diagram](Diagrams/Expense.png)
+
+*Expense class hierarchy showing the abstract superclass and its concrete subclasses*
+
 ### ExpenseManager
 
 The `ExpenseManager` is responsible for managing expenses and budgets:
@@ -241,6 +297,73 @@ The budget tracking system supports both global and category-specific budgets:
    ```
 
 3. **Case Insensitivity**: All category comparisons and keys are stored and compared in lowercase for consistency.
+
+#### Search Expense Feature
+
+**Proposed Implementation**
+
+The search feature allows users to find expenses by keyword using case-insensitive matching across both the expense description and category. It is implemented through the `SearchCommand` class and `ExpenseManager#searchByKeyword()` method. The flow involves:
+
+1. **Parser Phase**: The user input `search KEYWORD` is parsed to extract the search keyword (e.g., "chicken").
+
+2. **Command Creation**: The `Parser` creates a new `SearchCommand` object, passing the lowercase version of the keyword.
+
+3. **Execution**: The `SearchCommand#execute()` method calls `ExpenseManager#searchByKeyword(keyword)` to retrieve matching expenses.
+
+4. **Matching Logic**: The `searchByKeyword()` method:
+    - Converts the keyword to lowercase for case-insensitive comparison
+    - Iterates through all expenses in the collection
+    - Matches expenses where the description OR category contains the keyword (case-insensitive)
+    - Returns a new `ArrayList<Expense>` containing all matching expenses
+
+5. **Feedback**: The UI displays results in a formatted table with Index, Category, Name, Value, and Date columns. If no matches are found, a message is displayed.
+
+**Example Usage Scenario:**
+
+**Step 1.** The user has the following expenses in the system:
+```
+1. Food | Chicken Rice | $8.50 | 20-03-2026
+2. Transport | MRT fare | $2.00 | 20-03-2026
+3. Groceries | Chicken breast | $12.00 | 21-03-2026
+4. Food | Beef noodles | $5.50 | 21-03-2026
+```
+
+**Step 2.** The user wants to find all expenses related to "chicken" and enters:
+```
+search chicken
+```
+
+**Step 3.** The `Parser` recognizes the "search" keyword and creates a `SearchCommand` with keyword "chicken". 
+The keyword is automatically converted to lowercase internally for case-insensitive matching.
+
+**Step 4.** The `SearchCommand#execute()` calls `ExpenseManager#searchByKeyword("chicken")`.
+
+**Step 5.** The `ExpenseManager` searches through all expenses:
+    - "Chicken Rice" description contains "chicken" ✓ (Match 1)
+    - "MRT fare" description doesn't contain "chicken" ✗
+    - "Chicken breast" description contains "chicken" ✓ (Match 2)
+    - "Beef noodles" description doesn't contain "chicken" ✗
+
+**Step 6.** The method returns a list with 2 matching expenses.
+
+**Step 7.** The UI displays:
+```
+Search results for 'chicken':
+Index  Category     Name                 Value       Date
+1      Food         Chicken Rice         $8.50       20-03-2026
+2      Groceries    Chicken breast       $12.00      21-03-2026
+```
+
+**Design Characteristics:**
+
+- **Case-Insensitive Matching**: Both the keyword and expense fields are converted to lowercase for comparison, allowing users to search without worrying about capitalization.
+- **Partial Matching**: The search uses substring matching (`.contains()`), so "chick" would match "Chicken Rice" and "Chicken breast".
+- **Dual Field Search**: The search checks both expense description and category, providing flexibility. For example, searching "food" would match any Food category expense.
+- **Non-Destructive**: Search results are displayed separately and don't modify the actual expense list.
+
+The sequence diagram below illustrates the interactions within the system when a user executes the `search KEYWORD` command:
+
+![SearchCommand Sequence Diagram](Diagrams/SearchCommandDiagram.png)
 
 #### Design Considerations
 
