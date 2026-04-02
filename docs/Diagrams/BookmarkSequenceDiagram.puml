@@ -1,0 +1,54 @@
+@startuml
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+actor User
+participant Parser
+participant BookmarkCommand
+participant Managers
+participant ExpenseManager
+participant Bookmark
+
+User -> Parser : bookmark 2
+activate Parser
+
+Parser -> BookmarkCommand ** : new BookmarkCommand(1)
+activate BookmarkCommand
+BookmarkCommand --> Parser
+deactivate BookmarkCommand
+
+Parser --> User : return BookmarkCommand
+deactivate Parser
+
+User -> BookmarkCommand : execute(managers, ui)
+activate BookmarkCommand
+
+BookmarkCommand -> Managers : getExpenseManager()
+activate Managers
+Managers --> BookmarkCommand : expenseManager
+deactivate Managers
+
+BookmarkCommand -> ExpenseManager : getExpense(1)
+activate ExpenseManager
+ExpenseManager --> BookmarkCommand : expense
+deactivate ExpenseManager
+
+BookmarkCommand -> Managers : getBookmark()
+activate Managers
+Managers --> BookmarkCommand : bookmark
+deactivate Managers
+
+BookmarkCommand -> Bookmark : addBookmark(expense)
+activate Bookmark
+Bookmark --> BookmarkCommand
+deactivate Bookmark
+
+BookmarkCommand -> Bookmark : save()
+activate Bookmark
+Bookmark --> BookmarkCommand
+deactivate Bookmark
+
+BookmarkCommand --> User : showMessage(...)
+deactivate BookmarkCommand
+
+@enduml

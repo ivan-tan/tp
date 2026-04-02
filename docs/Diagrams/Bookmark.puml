@@ -1,0 +1,78 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class BookmarkCommand {
+    - index : int
+    + BookmarkCommand(index : int)
+    + execute(managers : Managers, ui : UI) : void
+}
+
+class Bookmark {
+    - filePath : String
+    - bookmarks : ArrayList<Expense>
+    + Bookmark(filePath : String)
+    + addBookmark(expense : Expense) : void
+    + removeBookmark(index : int) : void
+    + getBookmarks() : ArrayList<Expense>
+    + getBookmark(index : int) : Expense
+    + save() : void
+    + load() : void
+}
+
+class Managers {
+    + getExpenseManager() : ExpenseManager
+    + getBookmark() : Bookmark
+}
+
+class ExpenseManager {
+    + getExpense(index : int) : Expense
+}
+
+abstract class Expense {
+    # description : String
+    # amount : double
+    # date : LocalDate
+    + getDescription() : String
+    + getAmount() : double
+    + getDate() : LocalDate
+    + getCategory() : String
+    + getFormattedDate() : String
+}
+
+class Food
+class Transport
+class Groceries
+class Others
+
+class Parser {
+    + readCommand() : Command
+}
+
+class ExpensiveLehException {
+    + ExpensiveLehException(message : String)
+}
+
+abstract class Command {
+    + execute(managers : Managers, ui : UI) : void
+}
+
+Command <|-- BookmarkCommand
+
+Expense <|-- Food
+Expense <|-- Transport
+Expense <|-- Groceries
+Expense <|-- Others
+
+Parser ..> BookmarkCommand : creates
+
+BookmarkCommand --> Managers : uses
+BookmarkCommand ..> ExpensiveLehException : throws
+
+Managers --> ExpenseManager
+Managers --> Bookmark
+
+Bookmark --> Expense : stores
+
+ExpenseManager --> Expense : manages
+
+@enduml
