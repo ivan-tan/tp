@@ -1,0 +1,62 @@
+@startuml
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+actor User
+participant ":Storage" as Storage
+participant "f:File" as File
+participant "fw:FileWriter" as FileWriter
+participant "e:Expense" as Expense
+
+User -> Storage : save(budget, expenses)
+activate Storage
+
+Storage -> File ** : new File(filePath)
+Storage -> File : getParentFile()
+activate File
+File --> Storage : parentFile
+deactivate File
+
+alt parentFile != null && !parentFile.exists()
+    Storage -> File : mkdirs()
+    activate File
+    File --> Storage : created
+    deactivate File
+
+    note right of Storage
+        Throws IOException if
+        mkdirs() returns false
+    end note
+end
+
+Storage -> FileWriter ** : new FileWriter(f)
+activate FileWriter
+
+Storage -> FileWriter : write("BUDGET | " + budget + lineSeparator)
+
+loop for each Expense e in expenses
+    Storage -> Expense : instanceof check
+    activate Expense
+    Expense --> Storage : type (F/T/G/O)
+    deactivate Expense
+
+    Storage -> Expense : getDescription()
+    activate Expense
+    Expense --> Storage : description
+    deactivate Expense
+
+    Storage -> Expense : getAmount()
+    activate Expense
+    Expense --> Storage : amount
+    deactivate Expense
+
+    Storage -> FileWriter : write(type + " | " + desc + " | " + amount)
+end
+
+Storage -> FileWriter : close()
+deactivate FileWriter
+
+Storage --> User : return
+deactivate Storage
+
+@enduml

@@ -1,38 +1,62 @@
 @startuml
 skinparam classAttributeIconSize 0
+hide circle
+hide empty members
 
-package storage {
-    class Storage {
-        - filePath : String
-        + Storage(filePath : String)
-        + save(budget : double, expenses : ArrayList<Expense>) : void
-        + load() : StorageData
-    }
-
-    class "Storage::StorageData" as StorageData {
-        + budget : double
-        + expenses : ArrayList<Expense>
-        + StorageData(budget : double, expenses : ArrayList<Expense>)
-    }
+skinparam class {
+    BackgroundColor AliceBlue
+    ArrowColor Black
+    BorderColor Black
 }
 
-package seedu.duke {
-    abstract class Expense {
-        - description : String
-        - amount : double
-        + getDescription() : String
-        + getAmount() : double
+    class Storage {
+        - logger: Logger
+        - filePath: String
+        + Storage(filePath: String)
+        + save(budget: double, expenses: ArrayList<Expense>, loans: ArrayList<Loan>, categoryBudgets: HashMap<String, Double>): void
+        + load(): StorageData
     }
 
+    class StorageData {
+        + budget: double
+        + expenses: ArrayList<Expense>
+        + loans: ArrayList<Loan>
+        + categoryBudgets: HashMap<String, Double>
+        + StorageData(budget: double, expenses: ArrayList<Expense>, loans: ArrayList<Loan>, categoryBudgets: HashMap<String, Double>)
+    }
+
+
+
+    abstract class Expense <<abstract>> {
+        - description: String
+        - amount: double
+        - date: LocalDate
+        + getDescription(): String
+        + getAmount(): double
+        + getDate(): LocalDate
+    }
     class Food extends Expense
     class Transport extends Expense
     class Groceries extends Expense
     class Others extends Expense
-}
+    class ExpensiveLehException <<exception>>
+
+
+    class Loan {
+        - description: String
+        - amount: double
+        - date: LocalDate
+        + getDescription(): String
+        + getAmount(): double
+        + getDate(): LocalDate
+    }
 
 ' Relationships
-Storage +-- StorageData : contains >
+Storage ..> StorageData : creates >
 Storage ..> Expense : saves/loads >
-StorageData o-- "*" Expense : holds list of >
+Storage ..> Loan : saves/loads >
+Storage ..> ExpensiveLehException : throws >
+StorageData o-- Expense : contains
+StorageData o-- Loan : contains
 
 @enduml

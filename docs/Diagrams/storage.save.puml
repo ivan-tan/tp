@@ -1,14 +1,13 @@
 @startuml
-skinparam Style strictuml
-skinparam SequenceMessageAlignment center
-
-actor User
+participant ":Main" as Main
 participant ":Storage" as Storage
 participant "f:File" as File
 participant "fw:FileWriter" as FileWriter
 participant "e:Expense" as Expense
+participant "l:Loan" as Loan
+hide footbox
 
-User -> Storage : save(budget, expenses)
+Main -> Storage : save(budget, expenses, loans, categoryBudgets)
 activate Storage
 
 Storage -> File ** : new File(filePath)
@@ -21,7 +20,7 @@ alt parentFile != null && !parentFile.exists()
     Storage -> File : mkdirs()
     activate File
     File --> Storage : created
-    deactivate File
+    destroy File
 
     note right of Storage
         Throws IOException if
@@ -29,10 +28,15 @@ alt parentFile != null && !parentFile.exists()
     end note
 end
 
-Storage -> FileWriter ** : new FileWriter(f)
+create FileWriter
+Storage -> FileWriter : new FileWriter(f)
 activate FileWriter
 
-Storage -> FileWriter : write("BUDGET | " + budget + lineSeparator)
+Storage -> FileWriter : write("BUDGET | " + budget)
+
+loop for each category in categoryBudgets
+    Storage -> FileWriter : write("CATEGORY_BUDGET | " + category + " | " + amount)
+end
 
 loop for each Expense e in expenses
     Storage -> Expense : instanceof check
@@ -50,13 +54,36 @@ loop for each Expense e in expenses
     Expense --> Storage : amount
     deactivate Expense
 
-    Storage -> FileWriter : write(type + " | " + desc + " | " + amount)
+    Storage -> Expense : getDate()
+        activate Expense
+        Expense --> Storage : date
+        deactivate Expense
+
+    Storage -> FileWriter : write(type + " | " + desc + " | " + amount + date)
+end
+
+loop for each l in loans
+    Storage --> Loan : getDescription
+    activate Loan
+    Loan --> Storage : description
+    deactivate Loan
+
+    Storage --> Loan : getAmount
+    activate Loan
+    Loan --> Storage : amount
+    deactivate Loan
+
+    Storage --> Loan : getDate
+    activate Loan
+    Loan --> Storage : date
+    deactivate Loan
+
+    Storage -> FileWriter : write("L | " + desc + " | " + amount + " | " + date)
 end
 
 Storage -> FileWriter : close()
-deactivate FileWriter
+destroy FileWriter
 
-Storage --> User : return
+Storage --> Main
 deactivate Storage
-
 @enduml

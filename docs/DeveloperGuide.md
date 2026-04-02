@@ -2,7 +2,7 @@
 
 ## Acknowledgements
 
-{list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well}
+This DG has been written with reference to the [SE-AddressBook-DeveloperGuide](https://se-education.org/addressbook-level3/DeveloperGuide.html#proposed-undoredo-feature).
 
 ## Design
 
@@ -51,6 +51,28 @@ How the parsing works:
 * All `Command` subclasses (e.g. `AddCommand`, `DeleteCommand`, `EditCommand`) inherit from the `Command` abstract class so that they can be treated similarly where possible.
 * This allows `ExpensiveLeh` to call `command.execute(managers, ui)` uniformly regardless of which subclass it holds.
 
+
+### Storage Component
+
+API:  `Storage.java`
+![Storage class diagram](Diagrams/Storage.png)
+The `Storage` component is responsible for reading data from, and writing data to, the hard disk. This ensures that
+user data—such as budgets, expenses, and loans—is persisted across different sessions of the application.
+
+It uses a **singleton** data pattern, whereby only one `Storage` object is instantiated in the application.
+`Storage` creates a single `StorageData` object,
+containing `Loans`, `Expenses`, `Budget` and `categoryBudgets`. In other words, the `storageData`
+object **encapsulates** the various data types used by ExpensiveLeh, 
+allowing for easy transfer between the storage layer and main logic. During data operations,
+
+* The `Storage` object calls `save()` and converts in-memory objects (those in `storageData`) to a text format to be saved on the hard disk.
+* On application start, `Storage` calls `load()` and parses the file line-by-line, recreating the objects in `StorageData`. 
+
+
+
+In addition, error handling is handled through `ExpensiveLehException` when corrupted data or invalid file formats are encountered. 
+`Logger` is also used to track warnings when unknown data categories are envountered during the loading process.
+
 ### ExpenseManager
 
 The `ExpenseManager` is responsible for managing expenses and budgets:
@@ -73,6 +95,7 @@ Key methods include:
 ![ExpenseManager Class Diagram](Diagrams/ExpenseManager.png)
 
 *ExpenseManager class showing expense hierarchy and command relationships*
+
 
 ## Implementation
 
@@ -276,6 +299,27 @@ The sequence diagram below illustrates the interactions within the system when a
 
 The same method of execution works for the user input `rank loans` as well. In this similar case, `Parser` identifies the "loans" keyword and carries out the same execution, however, it instead retrieves `LoanManager` and calls `getPersonsTotals()`, which returns a map containing the total aggregated, owed amounts, grouped by person.
 
+### Storage Feature
+![Storage.save sequence diagram](Diagrams/storageSave.png)
+
+### How it works
+Whenever `save()` method is invoked in `main`, 
+1. File System Initialisation
+   1. The `Storage` object checks if the parent directory for the save file exists using `File`. If it doesn't, one is made.
+   2. If directory creation fails, an IOException is thrown, ensuring the application does not write to a non-existent path.
+2. Writing of Data using `Filewriter` into the data file
+   1. The global `budget` is first written.
+   2. A loop iterates through the `categoryBudgets` hashmap, writing each category and amount.
+   3. For each `Expense` object, an `instanceof` check is conducted to find out the type of expense. Following this,
+   the `description`, `amount` and `date` is retrieved and written.
+   4. Similarly, the loop is repeated for each `loan` object and the attributes are written.
+3. Resource Cleanup
+   1. After all data is written, `FileWriter` is destroyed and `Storage` hands control back to `main`.
+
+The data is written using a predetermined delimited string format, which can be referred to in the **Instructions for Manual Testing**.   
+
+
+
 ## Product scope
 ### Target user profile
 
@@ -288,23 +332,24 @@ them to track their expenses so that they do not overspend their budgets.
 
 ## User Stories
 
-| Version | As a ...  | I want to ...                                               | So that I can ...                                                  |
-|---------|-----------|-------------------------------------------------------------|--------------------------------------------------------------------|
-| v1.0    | user      | see my past expenses                                        | track my total expenditure                                         |
-| v1.0    | user      | log an expense using a single command                       | record expenses quickly without navigating through multiple inputs |
-| v2.0    | user      | add people who owe me money                                 | remember to chase them to return my money                          |
-| v2.0    | user      | mark people who have returned money owed                    | stop chasing them for money                                        |
+| Version | As a ...  | I want to ...                                              | So that I can ...                                                  |
+|---------|-----------|------------------------------------------------------------|--------------------------------------------------------------------|
+| v1.0    | user      | see my past expenses                                       | track my total expenditure                                         |
+| v1.0    | user      | log an expense using a single command                      | record expenses quickly without navigating through multiple inputs |
+| v2.0    | user      | add people who owe me money                                | remember to chase them to return my money                          |
+| v2.0    | user      | mark people who have returned money owed                   | stop chasing them for money                                        |
 | v2.0    | user      | know my remaining budget immediately after logging expenses | know how much money I have saved                                   |
-| v2.0    | lazy user | bookmark frequent expenses and add them                     | log them easily without typing everything out                      |
+| v2.0    | lazy user | bookmark frequent expenses and add them                    | log them easily without typing everything out                      |
 
 ## Non-Functional Requirements
 
-{Give non-functional requirements}
-
+1. Should work on any mainstream OS as long as it has Java 17 or above installed.
+2. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be
+able to accomplish most of the tasks faster using commands than using the mouse.
 ## Glossary
 
-* *glossary item* - Definition
+* **Mainstream OS**: Windows, Linux, Unix, MacOS
 
 ## Instructions for manual testing
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+{To be completed}

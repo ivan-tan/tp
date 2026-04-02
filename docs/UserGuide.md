@@ -1,12 +1,12 @@
 # User Guide - ExpensiveLeh Personal Finance Manager
 
-ExpensiveLeh is a CLI for managing your personal finances. Users can indicate their budget and add expenses into the app to track their budget situation. This guide documents all features including expense management, budgeting, loans, bookmarks, and search functionality.
-
+ExpensiveLeh is a CLI for managing your personal finances. Users can indicate their budget and add expenses into the 
+app to track their budget situation. This guide documents all features including expense management, budgeting, loans, 
+bookmarks, and search functionality.
 
 1. Ensure that you have Java 17 or above installed.
-2. Download the latest version of `ExpensiveLeh` from the project repository.
-3. Expenses are organized into categories: Food, Transport, Groceries, and Others.
-4. Each expense contains a description, amount, and date
+2. Download the latest version of `ExpensiveLeh.jar` from the project repository.
+3. Open a terminal, navigate to the path containing `ExpensiveLeh.jar` and run `java -jar ExpensiveLeh.jar`. 
 
 ## Features
 
@@ -326,21 +326,6 @@ Remaining budget: $779.00
 ________________________________________________________________
 ```
 
-Example: `list` (shortcut for list expenses)
-
-Output:
-```
-________________________________________________________________
-ExpensiveLeh says -> 
-Index  Category     Name                 Value      Date        
-1      Food         McDonald's Meal      $15.00     20-03-2026  
-2      Transport    Plane Ticket         $200.00    30-03-2026  
-3      Food         Noodles              $6.00      12-03-2026  
-
-Remaining budget: $779.00
-________________________________________________________________
-```
-
 Example: `list loans`
 
 Output:
@@ -494,8 +479,8 @@ To delete a loan, use 'delete loan INDEX'. Eg: delete loan 1
 To delete a bookmark, use 'delete bookmark INDEX'. Eg: delete bookmark 1
 To set a global budget, use 'budget AMOUNT'. Eg: budget 500.00
 To set a category budget, use 'budget c/CATEGORY a/AMOUNT'. Eg: budget c/Food a/100.00
-To list all expenses and remaining budget, use 'list expenses' or 'list'
-To list all loans, use 'list loans' or 'loans'
+To list all expenses and remaining budget, use 'list expenses' 
+To list all loans, use 'list loans' 
 To list all bookmarks, use 'list bookmarks'
 To list all category budgets, use 'list budgets'
 To bookmark an expense, use 'bookmark INDEX'. Eg: bookmark 1
@@ -530,13 +515,17 @@ ________________________________________________________________
 
 **Q**: Can I search by category?
 
-**A**: Yes, searching for category names like "food", "transport", "groceries", or "others" will return all expenses in that category.
+**A**: Yes, searching for category names like "food", "transport", "groceries", or "others" will return all expenses 
+in that category.
 
 **Q**: What if I search for a word that matches both description and category?
 
 **A**: All matching expenses will be returned, whether they match the description or the category.
 
 ## Command Summary
+
+```
+
 | Command                  | Format                                                       | Example                                         |
 |--------------------------|--------------------------------------------------------------|-------------------------------------------------|
 | Add expense              | `add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`              | `add c/Food n/Chicken Rice a/9.95 d/30-03-2026` |
@@ -549,8 +538,8 @@ ________________________________________________________________
 | Delete bookmark          | `delete bookmark INDEX`                                      | `delete bookmark 1`                             |
 | Set global budget        | `budget AMOUNT`                                              | `budget 500.00`                                 |
 | Set category budget      | `budget c/CATEGORY a/AMOUNT`                                 | `budget c/Food a/100.00`                        |
-| List expenses            | `list expenses` or `list`                                    | `list expenses` or `list`                       |
-| List loans               | `list loans` or `loans`                                      | `list loans` or `loans`                         |
+| List expenses            | `list expenses`                                              | `list expenses`                                 |
+| List loans               | `list loans`                                                 | `list loans`                                    |
 | List bookmarks           | `list bookmarks`                                             | `list bookmarks`                                |
 | List budgets             | `list budgets`                                               | `list budgets`                                  |
 | Bookmark an expense      | `bookmark INDEX`                                             | `bookmark 1`                                    |
@@ -560,3 +549,4 @@ ________________________________________________________________
 | Help                     | `help`                                                       | `help`                                          |
 | Exit                     | `exit`                                                       | `exit`                                          |
 
+```
