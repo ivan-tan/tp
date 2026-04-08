@@ -33,7 +33,8 @@ public class SearchCommand extends Command {
         // Display expenses
         if (hasExpenses) {
             result.append("\n--- Expenses ---\n");
-            result.append(String.format("%-6s %-12s %-20s %-10s %-12s%n", "Index", "Category", "Name", "Value", "Date"));
+            result.append(String.format("%-6s %-12s %-20s %-10s %-12s%n",
+                    "Index", "Category", "Name", "Value", "Date"));
 
             for (int i = 0; i < matchedExpenses.size(); i++) {
                 Expense expense = matchedExpenses.get(i);
@@ -49,7 +50,8 @@ public class SearchCommand extends Command {
         // Display loans
         if (hasLoans) {
             result.append("\n--- Loans ---\n");
-            result.append(String.format("%-6s %-12s %-20s %-10s %-12s%n", "Index", "Category", "Name", "Value", "Date"));
+            result.append(String.format("%-6s %-12s %-20s %-10s %-12s%n",
+                    "Index", "Category", "Name", "Value", "Date"));
 
             for (int i = 0; i < matchedLoans.size(); i++) {
                 Loan loan = matchedLoans.get(i);

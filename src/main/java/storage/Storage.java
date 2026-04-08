@@ -6,7 +6,6 @@ import seedu.duke.Food;
 import seedu.duke.Transport;
 import seedu.duke.Groceries;
 import seedu.duke.Others;
-import seedu.duke.ExpensiveLehException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

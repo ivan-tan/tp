@@ -55,7 +55,8 @@ public class Bookmark {
         FileWriter fw = new FileWriter(f);
 
         for (Expense e : bookmarks) {
-            String type = e instanceof Loan ? "L" : e instanceof Food ? "F" : e instanceof Transport ? "T" : e instanceof Groceries ? "G" : "O";
+            String type = e instanceof Loan ? "L" : e instanceof Food ? "F"
+                    : e instanceof Transport ? "T" : e instanceof Groceries ? "G" : "O";
             fw.write(type + " | " + e.getDescription() + " | " + e.getAmount() + " | " + e.getDate()
                     + System.lineSeparator());
         }
