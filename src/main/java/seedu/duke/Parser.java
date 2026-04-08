@@ -23,6 +23,8 @@ public class Parser {
 
         switch (command) {
         case "exit":
+        case "bye":
+        case "quit":
             return new ExitCommand();
 
         case "budget":
@@ -146,6 +148,11 @@ public class Parser {
         try {
             String[] parts = line.split("\\s+");
 
+            if  (parts.length == 1) {
+                throw new ExpensiveLehException("Missing details. Usage: "
+                        + "add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+            }
+
             if (parts.length > 1 && parts[1].equals("bookmark")) {
                 if (parts.length < 3) {
                     throw new ExpensiveLehException("Please enter a bookmark index!");
@@ -231,33 +238,43 @@ public class Parser {
     private Command parseEditCommand(String line) throws ExpensiveLehException {
         String[] parts = line.split("\\s+");
 
-        if (parts.length < 2) {
-            throw new ExpensiveLehException("Please provide an index to edit!");
+        // Catch empty edit command
+        if (parts.length == 1) {
+            throw new ExpensiveLehException(
+                    "Missing details. Usage: "
+                    + "edit [loan/expense] INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
         }
 
         boolean isLoan = false;
         int editIndex;
         int argStartIndex = 2; // Default start index for arguments
 
-        // Check if the user is trying to edit a loan
-        if (parts[1].equalsIgnoreCase("loan")) {
-            isLoan = true;
-            if (parts.length < 3) {
-                throw new ExpensiveLehException("Please provide a loan index to edit!");
-            }
-            try {
+        // Explicitly handle "loan", "expense", or just an index
+        try {
+            if (parts[1].equalsIgnoreCase("loan")) {
+                isLoan = true;
+                if (parts.length < 3) {
+                    throw new ExpensiveLehException("Please provide a loan index to edit!");
+                }
                 editIndex = Integer.parseInt(parts[2]) - 1;
-                argStartIndex = 3; // Shift the loop start point since "loan" took up a spot
-            } catch (NumberFormatException e) {
-                throw new ExpensiveLehException("Please enter a valid integer for the loan index!");
-            }
-        } else {
-            // Default expense behavior
-            try {
+                argStartIndex = 3; // Shift loop start point
+
+            } else if (parts[1].equalsIgnoreCase("expense")) {
+                isLoan = false;
+                if (parts.length < 3) {
+                    throw new ExpensiveLehException("Please provide an expense index to edit!");
+                }
+                editIndex = Integer.parseInt(parts[2]) - 1;
+                argStartIndex = 3; // Shift loop start point
+
+            } else {
+                // Default behavior: user just typed "edit 1" (no loan/expense keyword), default will be expense
+                isLoan = false;
                 editIndex = Integer.parseInt(parts[1]) - 1;
-            } catch (NumberFormatException e) {
-                throw new ExpensiveLehException("Please enter a valid integer for the expense index!");
+                argStartIndex = 2;
             }
+        } catch (NumberFormatException e) {
+            throw new ExpensiveLehException("Please enter a valid integer for the index!");
         }
 
         String category = null;
@@ -299,6 +316,9 @@ public class Parser {
             String type = isLoan ? "loan" : "expense";
             return new EditCommand(editIndex, category, name, amount, date, type);
 
+            // BUG FIX 3: Catch custom exceptions first, keep generic Exception as fallback
+        } catch (ExpensiveLehException e) {
+            throw e;
         } catch (java.time.format.DateTimeParseException e) {
             throw new ExpensiveLehException("Invalid date format. Please use DD-MM-YYYY (e.g., 13-03-2026).");
         } catch (NumberFormatException e) {
@@ -306,7 +326,7 @@ public class Parser {
         } catch (Exception e) {
             throw new ExpensiveLehException(
                     "Invalid edit command format. Usage: " +
-                            "edit [loan] INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
+                            "edit [loan/expense] INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]");
         }
     }
 

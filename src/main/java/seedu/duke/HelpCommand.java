@@ -26,7 +26,7 @@ public class HelpCommand extends Command {
                 + "To rank expenses by amount, use 'rank expenses'\n"
                 + "To rank loans by amount, use 'rank loans'\n"
                 + "To view all commands, use 'help'\n"
-                + "To exit the program, use 'exit'";
+                + "To exit the program, use 'exit', 'bye' or 'quit'";
 
         ui.showMessage(helpMessage);
     }
