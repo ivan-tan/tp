@@ -24,13 +24,15 @@ public class CategoryBudgetCommand extends Command {
         double currentGlobalBudget = expenseManager.getBudget();
         if (totalCategoryBudgets > currentGlobalBudget) {
             expenseManager.setBudget(totalCategoryBudgets);
-            ui.showMessage("Budget of $" + String.format("%.2f", amount) + " set successfully for " + category + "!");
+            ui.showMessage("Budget of $" + String.format("%.2f", amount) + " set successfully for "
+                    + category + "!");
             ui.showMessage("Global budget updated to $" + String.format("%.2f", totalCategoryBudgets)
                     + " as category budgets exceed previous global budget.");
         } else {
             boolean isNewBudget = expenseManager.getCategoryBudget(category) == amount;
             if (isNewBudget) {
-                ui.showMessage("Budget of $" + String.format("%.2f", amount) + " set successfully for " + category + "!");
+                ui.showMessage("Budget of $" + String.format("%.2f", amount) + " set successfully for "
+                        + category + "!");
             } else {
                 ui.showMessage("Budget updated successfully for " + category + "!");
             }
