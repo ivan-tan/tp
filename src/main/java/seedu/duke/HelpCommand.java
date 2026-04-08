@@ -22,7 +22,7 @@ public class HelpCommand extends Command {
                 + "To list all bookmarks, use 'list bookmarks'\n"
                 + "To list all category budgets, use 'list budgets'\n"
                 + "To bookmark an expense, use 'bookmark INDEX'. Eg: bookmark 1\n"
-                + "To search for an expense, use 'search KEYWORD'. Eg: search chicken\n"
+                + "To search for expenses and loans, use 'search KEYWORD'. Eg: search chicken\n"
                 + "To rank expenses by amount, use 'rank expenses'\n"
                 + "To rank loans by amount, use 'rank loans'\n"
                 + "To view all commands, use 'help'\n"
