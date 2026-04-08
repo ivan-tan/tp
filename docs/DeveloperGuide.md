@@ -266,7 +266,7 @@ The delete expense feature is implemented through the `DeleteCommand` class and 
 
 **Step 2.** The user decides to delete the first expense and enters:
 ```
-expense delete 1
+delete expense 1
 ```
 
 **Step 3.** The parser creates a `DeleteCommand` with index 0 (converted from 1).

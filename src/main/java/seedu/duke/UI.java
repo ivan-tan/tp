@@ -64,6 +64,12 @@ public class UI {
     public void showRanking(List<Map.Entry<String, Double>> rankedList, String type) {
         System.out.println(lineSeparator);
 
+        if (rankedList == null || rankedList.isEmpty()) {
+            System.out.println("ExpensiveLeh says -> No data to rank yet!");
+            System.out.println(lineSeparator);
+            return;
+        }
+
         if (type.equals("loan")) {
             System.out.println("ExpensiveLeh says -> Here are your loans ranked, by person: ");
         } else {
