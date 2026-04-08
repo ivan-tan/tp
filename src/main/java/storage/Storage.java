@@ -101,10 +101,10 @@ public class Storage {
             if (parts[0].equals("CATEGORY_BUDGET")) {
                 String category = parts[1];
                 double amount = Double.parseDouble(parts[2]);
-                loadedCategoryBudgets.put(category.toLowerCase(), amount);
                 if (amount < 0) {
                     throw new IOException("Invalid category budget in file: category budget cannot be negative");
                 }
+                loadedCategoryBudgets.put(category.toLowerCase(), amount);
                 continue;
             }
 
@@ -133,8 +133,8 @@ public class Storage {
                 expense = new Others(description, amount, date);
                 break;
             default:
-                logger.log(Level.WARNING, "attempted to save unknown category to storage: " + category);
-                throw new ExpensiveLehException("error in saving task");
+                logger.log(Level.WARNING, "attempted to load unknown category from storage: " + category);
+                throw new IOException("error loading unknown category from storage: " + category);
             }
             loadedExpenses.add(expense);
         }
