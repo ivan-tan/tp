@@ -74,7 +74,7 @@ allowing for easy transfer between the storage layer and main logic. During data
 * The `Storage` object calls `save()` and converts in-memory objects (those in `storageData`) to a text format to be saved on the hard disk.
 * On application start, `Storage` calls `load()` and parses the file line-by-line, recreating the objects in `StorageData`. 
 
-In addition, error handling is handled through `ExpensiveLehException` when corrupted data or invalid file formats are encountered. 
+In addition, error handling is handled through `IOException` when corrupted data or invalid file formats are encountered. 
 `Logger` is also used to track warnings when unknown data categories are envountered during the loading process.
 
 ### Expense Superclass
@@ -574,7 +574,64 @@ able to accomplish most of the tasks faster using commands than using the mouse.
 ## Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Expenses**: Food, Groceries, Transport, Others
 
 ## Instructions for manual testing
 
-{To be completed}
+Given below are instructions to test the app manually. Note that users are expected to more exploratory testing.
+
+### Adding an expense/loan
+
+Correct format: `add c/CATEGORY a/AMOUNT n/DESCRIPTION [d/DATE]`
+
+1. Test case: `add`. 
+- Expected: `Missing details. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
+
+2. Test case: Missing any one of the compulsory parameters.
+- Expected: `PARAMETER is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
+
+3. Test case: Negative amount provided.
+- Expected `Amount must be positive`.
+
+### Saving data
+**WARNING:** Save a copy of expenses.txt elsewhere first before attempting any changes to expenses.txt.
+Any unexpected data expected in expenses.txt will cause all data to be deleted.
+
+1.**Dealing with corrupted data in the expenses.txt file**
+
+To simulate corrupted data, open the expenses.txt file and perform any of the following changes:
+1. remove `|` from any of the lines
+2. replace a number with a character
+3. change the date format
+4. Insert a negative amount for `BUDGET` , `CATEGORY BUDGET` or expense/loan `AMOUNT`
+5. replace the expenses or loan category from `F`, `G`, `T`, `O`, `L` to another string or character
+
+Expected: `Could not save data: REASON`. Nothing will be loaded from the file and all data will be deleted. 
+Users will need to re-input their data either manually on the expenses.txt file or via the application.    
+
+2. **Manually editing data in expenses.txt file**
+
+This is generally not recommended as there is a risk of inputting the wrong data, causing everything to be
+deleted. Only proceed if you are confident of modifying the data. 
+
+The table below summarises the expected formats in expenses.txt 
+
+| Category        | Format                                | Remarks                                                                                                                   |
+|-----------------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| Budget          | BUDGET \| AMOUNT                      | BUDGET is in all **uppercase**                                                                                            |
+| Category Budget | CATEGORY_BUDGET \| CATEGORY \| AMOUNT | CATEGORY_BUDGET is in all **uppercase**, CATEGORY is in **lowercase**, and refers to food, transport, groceries or others |
+| Loan            | L \| NAME \| AMOUNT \| DATE           | NAME can be either uppercase or lowercase                                                                                 |
+| Food            | F \| NAME \| AMOUNT \| DATE           | NAME can be either uppercase or lowercase                                                                                 |
+| Groceries       | G \| NAME \| AMOUNT \| DATE           | NAME can be either uppercase or lowercase                                                                                 |
+| Transport       | T \| NAME \| AMOUNT \| DATE           | NAME can be either uppercase or lowercase                                                                                 |
+| Others          | O \| NAME \| AMOUNT \| DATE           | NAME can be either uppercase or lowercase                                                                                 |
+
+| Parameter       | Data Type/format |
+|-----------------|------------------|
+| BUDGET          | double           |
+| CATEGORY_BUDGET | double           |
+| CATEGORY        | string           |
+| AMOUNT          | double           |
+| NAME            | string           |
+| DATE            | YYYY-MM-DD       |
+

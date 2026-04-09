@@ -39,7 +39,7 @@ skinparam class {
     class Transport extends Expense
     class Groceries extends Expense
     class Others extends Expense
-    class ExpensiveLehException <<exception>>
+    class IOException <<exception>>
 
 
     class Loan {
@@ -52,11 +52,11 @@ skinparam class {
     }
 
 ' Relationships
-Storage ..> StorageData : creates >
+Storage ..> StorageData : creates > "1"
 Storage ..> Expense : saves/loads >
 Storage ..> Loan : saves/loads >
-Storage ..> ExpensiveLehException : throws >
-StorageData o-- Expense : contains
-StorageData o-- Loan : contains
+Storage ..> IOException : throws >
+StorageData o-- Expense : contains "*"
+StorageData o-- Loan : contains "*"
 
 @enduml

@@ -184,21 +184,20 @@ public class Parser {
                             java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 }
             }
-
-            if (name == null || name.trim().isEmpty()) {
+            if (category == null || category.trim().isEmpty()) {
                 throw new ExpensiveLehException(
-                        "NAME cannot be empty. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "CATEGORY is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount == null) {
                 throw new ExpensiveLehException(
                         "AMOUNT is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount <= 0) {
-                throw new ExpensiveLehException("Expense amount must be positive.");
+                throw new ExpensiveLehException("Amount must be positive.");
             }
-            if (category == null || category.trim().isEmpty()) {
+            if (name == null || name.trim().isEmpty()) {
                 throw new ExpensiveLehException(
-                        "Valid CATEGORY required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "NAME is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
 
             Expense expense;

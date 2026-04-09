@@ -81,64 +81,97 @@ public class Storage {
             return new StorageData(loadedBudget, loadedExpenses, loadedLoans, loadedCategoryBudgets);
         }
 
-        Scanner s = new Scanner(f);
-        while (s.hasNextLine()) {
-            String line = s.nextLine();
-            if (line.trim().isEmpty()) {
-                continue;
-            }
-
-            String[] parts = line.split(" \\| ");
-            if (parts[0].equals("BUDGET")) {
-                loadedBudget = Double.parseDouble(parts[1]);
-                if (loadedBudget < 0) {
-                    throw new IOException("budget loaded is negative");
+        try (Scanner s = new Scanner(f)) {
+            int lineCount = 0;
+            while (s.hasNextLine()) {
+                lineCount++;
+                String line = s.nextLine();
+                if (line.trim().isEmpty()) {
+                    continue;
                 }
-                continue;
-            }
 
-            if (parts[0].equals("CATEGORY_BUDGET")) {
-                String category = parts[1];
-                double amount = Double.parseDouble(parts[2]);
-                if (amount < 0) {
-                    throw new IOException("Invalid category budget in file: category budget cannot be negative");
+                // Defensive Check: Ensure the separator exists
+                if (!line.contains(" | ")) {
+                    logger.log(Level.WARNING, "Invalid line: " + line);
+                    throw new IOException("Data corruption at line " + lineCount + ": Missing separator ' | '");
                 }
-                loadedCategoryBudgets.put(category.toLowerCase(), amount);
-                continue;
-            }
 
-            String category = parts[0];
-            String description = parts[1];
-            double amount = Double.parseDouble(parts[2]);
-            LocalDate date = LocalDate.parse(parts[3]);
+                String[] parts = line.split(" \\| ");
 
-            if (category.equals("L")) {
-                loadedLoans.add(new Loan(description, amount, date));
-                continue;
-            }
+                try {
+                    if (parts[0].equals("BUDGET")) {
+                        validatePartsCount(parts, 2, lineCount);
+                        loadedBudget = Double.parseDouble(parts[1]);
+                        if (loadedBudget < 0) {
+                            logger.log(Level.WARNING, "Invalid line: " + line);
+                            throw new IOException("Negative budget at line " + lineCount);
+                        }
+                        continue;
+                    }
 
-            Expense expense;
-            switch (category) {
-            case "F":
-                expense = new Food(description, amount, date);
-                break;
-            case "T":
-                expense = new Transport(description, amount, date);
-                break;
-            case "G":
-                expense = new Groceries(description, amount, date);
-                break;
-            case "O":
-                expense = new Others(description, amount, date);
-                break;
-            default:
-                logger.log(Level.WARNING, "attempted to load unknown category from storage: " + category);
-                throw new IOException("error loading unknown category from storage: " + category);
+                    if (parts[0].equals("CATEGORY_BUDGET")) {
+                        validatePartsCount(parts, 3, lineCount);
+                        String category = parts[1].toLowerCase();
+                        double amount = Double.parseDouble(parts[2]);
+                        if (amount < 0){
+                            logger.log(Level.WARNING, "Invalid line: " + line);
+                            throw new IOException("Negative category budget at line " + lineCount);
+                        }
+                        loadedCategoryBudgets.put(category, amount);
+                        continue;
+                    }
+
+                    // Standard Expense/Loan Validation
+                    validatePartsCount(parts, 4, lineCount);
+                    String category = parts[0];
+                    String description = parts[1];
+                    double amount = Double.parseDouble(parts[2]);
+                    LocalDate date = LocalDate.parse(parts[3]);
+
+                    if (amount < 0){
+                        logger.log(Level.WARNING, "Invalid line: " + line);
+                        throw new IOException("Negative amount at line " + lineCount);
+                    }
+
+                    if (category.equals("L")) {
+                        loadedLoans.add(new Loan(description, amount, date));
+                    } else {
+                        loadedExpenses.add(createExpense(category, description, amount, date, lineCount));
+                    }
+
+                } catch (NumberFormatException e) {
+                    logger.log(Level.WARNING, "Invalid line: " + line);
+                    throw new IOException("Data corruption at line " + lineCount + ": Invalid number format.");
+                } catch (java.time.format.DateTimeParseException e) {
+                    logger.log(Level.WARNING, "Invalid line: " + line);
+                    throw new IOException("Data corruption at line " + lineCount +
+                            ": Invalid date format (Expected YYYY-MM-DD).");
+                }
             }
-            loadedExpenses.add(expense);
         }
-        s.close();
         return new StorageData(loadedBudget, loadedExpenses, loadedLoans, loadedCategoryBudgets);
+    }
 
+    // Helper method to ensure the correct number of columns exist
+    private void validatePartsCount(String[] parts, int expected, int lineNum) throws IOException {
+        if (parts.length < expected) {
+            throw new IOException("Data corruption at line " + lineNum + ": Missing data fields.");
+        }
+    }
+
+    // Helper to handle the switch logic cleanly
+    private Expense createExpense(String type, String desc, double amt, LocalDate date, int line) throws IOException {
+        switch (type) {
+        case "F":
+            return new Food(desc, amt, date);
+        case "T":
+            return new Transport(desc, amt, date);
+        case "G":
+            return new Groceries(desc, amt, date);
+        case "O":
+            return new Others(desc, amt, date);
+        default:
+            throw new IOException("Data corruption at line " + line + ": Unknown category code '" + type + "'");
+        }
     }
 }
