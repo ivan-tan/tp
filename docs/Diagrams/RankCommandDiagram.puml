@@ -51,12 +51,15 @@ note right of UI
   blocks for each category
 end note
 
+caption Note: Sequence for "rank loans" follows the same path as "rank expenses" here.
+
+UI --> User : displays ranked bar chart
 UI --> RankCommand
 deactivate UI
 
 RankCommand --> Main
 deactivate RankCommand
 
-Main --> User : displays ranked bar chart
+Main --> User
 deactivate Main
 @enduml
