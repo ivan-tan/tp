@@ -35,16 +35,15 @@ class StorageTest {
     void saveAndLoad_validExpenses_success() throws IOException {
         Path filePath = tempDir.resolve("test_finance_data.txt");
         Storage storage = new Storage(filePath.toString());
-        // 1. Prepare Expenses
+
         expenses.add(new Food("Chicken Rice", 4.50, testDate));
         expenses.add(new Transport("Bus", 1.20, testDate));
         expenses.add(new Groceries("Shampoo", 6.90, testDate));
         expenses.add(new Others("Pickleball racquet", 67.0, testDate));
-        // Save data
+
         storage.save(budget, expenses, loans, categoryBudgets);
-        // Load all data
         Storage.StorageData loadedData = storage.load();
-        // Verify Expenses
+
         assertEquals(4, loadedData.expenses.size(), "Should load 4 expenses");
         assertInstanceOf(Food.class, loadedData.expenses.get(0));
         assertEquals("Chicken Rice", loadedData.expenses.get(0).getDescription());
@@ -55,14 +54,11 @@ class StorageTest {
     void saveAndLoad_validLoans_success() throws IOException {
         Path filePath = tempDir.resolve("test_loans_data.txt");
         Storage storage = new Storage(filePath.toString());
-        // Prepare Loans
         loans.add(new Loan("Jack", 50.0, testDate));
         loans.add(new Loan("Ashley", 60, testDate));
-        // Save data
         storage.save(budget, expenses, loans, categoryBudgets);
-        // Load all data
         Storage.StorageData loadedData = storage.load();
-        // 6. Verify Loans
+
         assertEquals(2, loadedData.loans.size(), "Should load 2 loans");
         assertEquals("Jack", loadedData.loans.get(0).getDescription(), "Loan name should match");
         assertEquals(50.0, loadedData.loans.get(0).getAmount(), "Loan amount should match");
@@ -72,11 +68,9 @@ class StorageTest {
 
     @Test
     void saveAndLoad_categoryBudgets_success() throws IOException {
-        // Arrange
         Path filePath = tempDir.resolve("test_catBudgets_data.txt");
         Storage storage = new Storage(filePath.toString());
 
-        double overallBudget = 1000.0;
         ArrayList<Expense> expenses = new ArrayList<>();
         ArrayList<Loan> loans = new ArrayList<>();
 
@@ -84,11 +78,9 @@ class StorageTest {
         categoryBudgets.put("food", 200.0);
         categoryBudgets.put("transport", 150.0);
 
-        // Act
         storage.save(budget, expenses, loans, categoryBudgets);
         Storage.StorageData loadedData = storage.load();
 
-        // Assert
         assertEquals(2, loadedData.categoryBudgets.size(), "Should load 2 categories");
         assertEquals(200.0, loadedData.categoryBudgets.get("food"), "Food budget should match");
         assertEquals(150.0, loadedData.categoryBudgets.get("transport"), "Transport budget should match");
@@ -106,30 +98,75 @@ class StorageTest {
 
     @Test
     void saveAndLoad_overallBudget_success() throws IOException {
-        // Arrange: Create storage in a temporary file
         Path filePath = tempDir.resolve("budget_test.txt");
         Storage storage = new Storage(filePath.toString());
-
         double expectedBudget = 5000.50;
-        // Act: Save and then load the data
         storage.save(expectedBudget, expenses, loans, categoryBudgets);
         Storage.StorageData loadedData = storage.load();
-
-        // Assert: Verify the budget was preserved
         assertEquals(expectedBudget, loadedData.budget, "The loaded budget should match the saved budget.");
     }
 
     @Test
     void load_noFile_returnsZeroBudget() throws IOException {
-        // Arrange: Use a path that definitely doesn't exist
         Path nonExistentPath = tempDir.resolve("does_not_exist.txt");
         Storage storage = new Storage(nonExistentPath.toString());
-
-        // Act: Attempt to load
         Storage.StorageData loadedData = storage.load();
-
-        // Assert: Your code returns 0.0 if the file doesn't exist
         assertEquals(0.0, loadedData.budget, "Budget should be 0.0 when no save file is found.");
+    }
+
+    @Test
+    void load_mixedValidAndInvalid_loadsValidOnly() throws IOException {
+        Path filePath = tempDir.resolve("mixed_data.txt");
+        String content = "F | Chicken Rice | 4.50 | " + testDate + System.lineSeparator() +
+                "CORRUPT | DATA | LINE" + System.lineSeparator() +
+                "T | Bus | 1.20 | " + testDate;
+        java.nio.file.Files.writeString(filePath, content);
+        Storage storage = new Storage(filePath.toString());
+        Storage.StorageData data = storage.load();
+
+        assertEquals(2, data.expenses.size(), "Should load 2 valid expenses and skip 1 corrupted line");
+        assertEquals("Chicken Rice", data.expenses.get(0).getDescription());
+        assertEquals("Bus", data.expenses.get(1).getDescription());
+    }
+
+    @Test
+    void load_negativeValues_skipsLines() throws IOException {
+        Path filePath = tempDir.resolve("negative_values.txt");
+        String content = "BUDGET | -100.0" + System.lineSeparator() +
+                "F | Debt | -5.0 | " + testDate + System.lineSeparator() +
+                "CATEGORY_BUDGET | food | -50.0";
+        java.nio.file.Files.writeString(filePath, content);
+        Storage storage = new Storage(filePath.toString());
+        Storage.StorageData data = storage.load();
+
+        assertEquals(0.0, data.budget, "Negative budget should be ignored");
+        assertTrue(data.expenses.isEmpty(), "Negative expense should be ignored");
+        assertTrue(data.categoryBudgets.isEmpty(), "Negative category budget should be ignored");
+    }
+
+    @Test
+    void load_unknownExpenseType_skipsLine() throws IOException {
+        Path filePath = tempDir.resolve("unknown_type.txt");
+        String content = "Z | Mystery Item | 10.0 | " + testDate;
+        java.nio.file.Files.writeString(filePath, content);
+
+        Storage storage = new Storage(filePath.toString());
+        Storage.StorageData data = storage.load();
+
+        assertTrue(data.expenses.isEmpty(), "Unknown category codes should be skipped");
+    }
+
+    @Test
+    void load_malformedNumberFormat_skipsLine() throws IOException {
+        Path filePath = tempDir.resolve("bad_number.txt");
+        // Amount is "ABC" instead of a double
+        String content = "F | Expensive | ABC | " + testDate;
+        java.nio.file.Files.writeString(filePath, content);
+
+        Storage storage = new Storage(filePath.toString());
+        Storage.StorageData data = storage.load();
+
+        assertTrue(data.expenses.isEmpty(), "Malformed numbers should result in the line being skipped");
     }
 
 }
