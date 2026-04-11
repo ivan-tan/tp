@@ -462,7 +462,7 @@ The same method of execution works for the user input `rank loans` as well. In t
 ### Storage Feature
 ![Storage.save sequence diagram](Diagrams/storageSave.png)
 
-### How it works
+#### How it works
 Whenever `save()` method is invoked in `main`, 
 1. File System Initialisation
    1. The `Storage` object checks if the parent directory for the save file exists using `File`. If it doesn't, one is made.
@@ -477,6 +477,13 @@ Whenever `save()` method is invoked in `main`,
    1. After all data is written, `FileWriter` is destroyed and `Storage` hands control back to `main`.
 
 The data is written using a predetermined delimited string format, which can be referred to in the **Instructions for Manual Testing**.
+
+#### Design Considerations
+
+1. **Data Serialisation Strategy** 
+- **Decision**: The implementation uses a Delimiter-Separated Values (DSV) format rather than standard formats like JSON or XML
+- **Rationale**: This makes the data file human-readable and easy to parse using simple string splitting without needing external libraries.
+- **Trade-off**: Requires substantial defensive checks when loading data, as users might input characters that fail to parse. 
 
 ---
 

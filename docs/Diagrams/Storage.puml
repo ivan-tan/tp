@@ -39,24 +39,17 @@ skinparam class {
     class Transport extends Expense
     class Groceries extends Expense
     class Others extends Expense
+    class Loan extends Expense
     class IOException <<exception>>
 
 
-    class Loan {
-        - description: String
-        - amount: double
-        - date: LocalDate
-        + getDescription(): String
-        + getAmount(): double
-        + getDate(): LocalDate
-    }
+
 
 ' Relationships
-Storage ..> StorageData : creates > "1"
-Storage ..> Expense : saves/loads >
-Storage ..> Loan : saves/loads >
-Storage ..> IOException : throws >
+Storage --> StorageData : creates > "1"
+Storage ..> Expense : saves >
+Storage ..> IOException : throws > "0..1"
 StorageData o-- Expense : contains "*"
-StorageData o-- Loan : contains "*"
+
 
 @enduml
