@@ -75,7 +75,7 @@ allowing for easy transfer between the storage layer and main logic. During data
 * On application start, `Storage` calls `load()` and parses the file line-by-line, recreating the objects in `StorageData`. 
 
 In addition, error handling is handled through `IOException` when corrupted data or invalid file formats are encountered. 
-`Logger` is also used to track warnings when unknown data categories are envountered during the loading process.
+`Logger` is also used to track the line where error corruption has occurred.
 
 ### Expense Superclass
 
@@ -462,7 +462,7 @@ The same method of execution works for the user input `rank loans` as well. In t
 ### Storage Feature
 ![Storage.save sequence diagram](Diagrams/storageSave.png)
 
-### How it works
+#### How it works
 Whenever `save()` method is invoked in `main`, 
 1. File System Initialisation
    1. The `Storage` object checks if the parent directory for the save file exists using `File`. If it doesn't, one is made.
@@ -477,6 +477,13 @@ Whenever `save()` method is invoked in `main`,
    1. After all data is written, `FileWriter` is destroyed and `Storage` hands control back to `main`.
 
 The data is written using a predetermined delimited string format, which can be referred to in the **Instructions for Manual Testing**.
+
+#### Design Considerations
+
+1. **Data Serialisation Strategy** 
+- **Decision**: The implementation uses a Delimiter-Separated Values (DSV) format rather than standard formats like JSON or XML
+- **Rationale**: This makes the data file human-readable and easy to parse using simple string splitting without needing external libraries.
+- **Trade-off**: Requires substantial defensive checks when loading data, as users might input characters that fail to parse. 
 
 ---
 
@@ -556,10 +563,12 @@ them to track their expenses so that they do not overspend their budgets.
 | v1.0    | user           | see my past expenses                                        | track my total expenditure                                                              |
 | v1.0    | user           | have an easy to use interface                               | use the  product without much difficulty and fatigue                                    |
 | v1.0    | impatient user | log an expense using a single command                       | record expenses quickly without navigating through multiple inputs                      |
-| v1.0    | user           | delete an expense or loan                                   | remove unwanted entries and entries that are no longer needed                           |
+| v1.0    | user           | delete an expense                                           | remove unwanted entries and entries that are no longer needed                           |
 | v2.0    | user           | edit an existing expense or loan                            | easily correct any misinputs I made or make changes to entries without difficulty       |
 | v2.0    | user           | add people who owe me money                                 | remember to chase them to return my money                                               |
-| v2.0    | user           | mark people who have returned money owed                    | stop chasing them for money                                                             |
+| v2.0    | user           | see my total money lent and to who                          | see a summary of money I lent and to who                                                |
+| v2.0    | user           | mark people who have returned my money                      | stop chasing them for money                                                             |
+| v2.0    | user           | see my past loans                                           | remember all my loans                                                                   |
 | v2.0    | user           | know my remaining budget immediately after logging expenses | know how much money I have saved                                                        |
 | v2.0    | user           | rank my expenses                                            | easily see which category of expense where I have spent the most                        |
 | v2.0    | user           | rank my loans                                               | easily see who owes me the most money                                                   |
@@ -568,13 +577,21 @@ them to track their expenses so that they do not overspend their budgets.
 
 ## Non-Functional Requirements
 
-1. Should work on any mainstream OS as long as it has Java 17 or above installed.
+1. Should work on any mainstream OS as long as it has Java 17 installed.
 2. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be
 able to accomplish most of the tasks faster using commands than using the mouse.
+3. The application should respond to user commands within 1 second.
+4. The application does not require internet access and can be run fully locally.
+5. Errors shown are descriptive in order to tell users what went wrong. 
+
 ## Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Expenses**: Food, Groceries, Transport, Others
+* **Name** and **Description** are used interchangeably to mean the name/description of the expense or loan.
+* **Budget** refers to the global budget. This must be more than the sum of **category budgets**.
+* **Category budgets** refer to either the budget for **Food**, **Groceries**, **Transport** or **Others**.
+
 
 ## Instructions for manual testing
 
@@ -584,14 +601,23 @@ Given below are instructions to test the app manually. Note that users are expec
 
 Correct format: `add c/CATEGORY a/AMOUNT n/DESCRIPTION [d/DATE]`
 
-1. Test case: `add`. 
+Eg: `add c/food a/10 n/Mcdonalds` 
+
+1. Test case: Add without additional information.
+
+    Eg: `add`. 
 - Expected: `Missing details. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
 
-2. Test case: Missing any one of the compulsory parameters.
-- Expected: `PARAMETER is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
+2. Test case: Incomplete compulsory parameter(s).
+  
+    Eg: `add c/ a/10 n/KFC`
+- Expected: `CATEGORY is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
+Note: The error corresponds to the incomplete parameter. In this case, it is `CATEGORY`. It may also be `NAME` or `AMOUNT`. 
 
 3. Test case: Negative amount provided.
-- Expected `Amount must be positive`.
+    
+    Eg: `add c/food a/-20 n/KFC`
+- Expected: `Amount must be positive!`.
 
 ### Searching for expenses and loans
 
@@ -617,26 +643,8 @@ Correct format: `search KEYWORD`
 
 ### Saving data
 **WARNING:** Save a copy of expenses.txt elsewhere first before attempting any changes to expenses.txt.
-Any unexpected data expected in expenses.txt will cause all data to be deleted.
 
-1.**Dealing with corrupted data in the expenses.txt file**
-
-To simulate corrupted data, open the expenses.txt file and perform any of the following changes:
-1. remove `|` from any of the lines
-2. replace a number with a character
-3. change the date format
-4. Insert a negative amount for `BUDGET` , `CATEGORY BUDGET` or expense/loan `AMOUNT`
-5. replace the expenses or loan category from `F`, `G`, `T`, `O`, `L` to another string or character
-
-Expected: `Could not save data: REASON`. Nothing will be loaded from the file and all data will be deleted. 
-Users will need to re-input their data either manually on the expenses.txt file or via the application.    
-
-2. **Manually editing data in expenses.txt file**
-
-This is generally not recommended as there is a risk of inputting the wrong data, causing everything to be
-deleted. Only proceed if you are confident of modifying the data. 
-
-The table below summarises the expected formats in expenses.txt 
+The table below summarises the expected formats in expenses.txt
 
 | Category        | Format                                | Remarks                                                                                                                   |
 |-----------------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
@@ -656,4 +664,34 @@ The table below summarises the expected formats in expenses.txt
 | AMOUNT          | double           |
 | NAME            | string           |
 | DATE            | YYYY-MM-DD       |
+
+#### 1. Testing for expected behaviour
+1. Start with no `./data` directory
+2. Start the application and add expenses, loans, and budgets.
+3. Check that `./data/expenses.txt` exists and the data format follows the table above.
+4. Restart the application and edit/add more data.
+5. Check that `./data/expenses.txt` reflects the changes.
+
+#### 2. **Dealing with corrupted data in the expenses.txt file**
+
+
+To simulate corrupted data, open the expenses.txt file and perform any of the following changes:
+1. remove or add `|` from any of the lines
+2. replace a number with a character
+3. change the date format
+4. Insert a negative amount for `BUDGET` , `CATEGORY BUDGET` or expense/loan `AMOUNT`
+5. replace the expenses or loan category from `F`, `G`, `T`, `O`, `L` to another string or character
+
+Expected: `WARNING: Corrupted line LINE_COUNT: REASON`, where `LINE_COUNT` is an integer corresponding to the line in expenses.txt
+and `REASON` is the error encountered when loading the line.
+
+Example: At line 3 of expenses.txt, input `F | KFC | 3.0  2026-04-11`
+
+Output: `WARNING:  Corrupted line 3: Incorrect number of '|' provided. Line deleted.`
+
+The application will automatically delete the corrupted line, and move on to the next line.   
+
+
+
+
 

@@ -340,19 +340,6 @@ Total Owed to You: $55.00
 ________________________________________________________________
 ```
 
-Example: `loans` (shortcut for list loans)
-
-Output:
-```
-________________________________________________________________
-ExpensiveLeh says -> 
---- Current Loans (Money Owed to You) ---
-1    [OWED BY] Jonathan | $55.00 | 30-03-2026
-
-Total Owed to You: $55.00
-________________________________________________________________
-```
-
 Example: `list bookmarks`
 
 Output:

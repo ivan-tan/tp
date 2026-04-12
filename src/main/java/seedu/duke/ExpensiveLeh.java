@@ -22,7 +22,7 @@ public class ExpensiveLeh {
                     new LoanManager(data.loans), bookmark);
 
         } catch (IOException e) {
-            ui.showError("Could not load save file: " + e.getMessage());
+            ui.showError("\n WARNING! Could not load save file: " + e.getMessage() + "\n");
             managers = new Managers(new ExpenseManager(), new LoanManager(), bookmark);
         }
 
@@ -43,7 +43,7 @@ public class ExpensiveLeh {
                 ui.showError(e.getMessage());
                 ui.showLine();
             } catch (IOException e) {
-                ui.showError("Could not save data: " + e.getMessage());
+                ui.showError("\n WARNING! Could not save data: " + e.getMessage() + '\n');
             }
         }
     }

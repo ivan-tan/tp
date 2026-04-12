@@ -38,6 +38,25 @@ loop for each category in categoryBudgets
     Storage -> FileWriter : write("CATEGORY_BUDGET | " + category + " | " + amount)
 end
 
+loop for each l in loans
+    Storage --> Loan : getDescription
+    activate Loan
+    Loan --> Storage : description
+    deactivate Loan
+
+    Storage --> Loan : getAmount
+    activate Loan
+    Loan --> Storage : amount
+    deactivate Loan
+
+    Storage --> Loan : getDate
+    activate Loan
+    Loan --> Storage : date
+    deactivate Loan
+
+    Storage -> FileWriter : write("L | " + desc + " | " + amount + " | " + date)
+end
+
 loop for each Expense e in expenses
     Storage -> Expense : instanceof check
     activate Expense
@@ -59,27 +78,18 @@ loop for each Expense e in expenses
         Expense --> Storage : date
         deactivate Expense
 
-    Storage -> FileWriter : write(type + " | " + desc + " | " + amount + date)
+    Storage -> FileWriter : write(type + " | " + desc + " | " + amount + "|" + date)
+    note over Expense,Loan
+    Expense and Loan
+    objects are not destroyed
+    and will persist in memory
+    until application ends
+
+    end note
+
 end
 
-loop for each l in loans
-    Storage --> Loan : getDescription
-    activate Loan
-    Loan --> Storage : description
-    deactivate Loan
 
-    Storage --> Loan : getAmount
-    activate Loan
-    Loan --> Storage : amount
-    deactivate Loan
-
-    Storage --> Loan : getDate
-    activate Loan
-    Loan --> Storage : date
-    deactivate Loan
-
-    Storage -> FileWriter : write("L | " + desc + " | " + amount + " | " + date)
-end
 
 Storage -> FileWriter : close()
 destroy FileWriter

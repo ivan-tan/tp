@@ -18,6 +18,9 @@ public class Parser {
             return new ExitCommand();
         }
         String line = scanner.nextLine().trim();
+        if (line.contains("|")) {
+            throw new ExpensiveLehException("Input cannot include '|'.");
+        }
         String[] partsBySpace = line.split("\\s+");
         String command = partsBySpace[0].toLowerCase();
 
@@ -224,13 +227,13 @@ public class Parser {
             // 1. Check Category first
             if (category == null || category.trim().isEmpty()) {
                 throw new ExpensiveLehException(
-                        "Valid CATEGORY is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "CATEGORY is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
 
             // 2. Check Name second
             if (name == null || name.trim().isEmpty()) {
                 throw new ExpensiveLehException(
-                        "Valid NAME is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
+                        "NAME is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
 
             // 3. Check Amount third
@@ -239,7 +242,7 @@ public class Parser {
                         "AMOUNT is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
             if (amount <= 0) {
-                throw new ExpensiveLehException("Expense amount must be positive!");
+                throw new ExpensiveLehException("Amount must be positive!");
             }
 
             Expense expense;

@@ -26,7 +26,6 @@ public class ExpenseManager {
 
     public ExpenseManager(ArrayList<Expense> expenses, double budget, HashMap<String, Double> categoryBudgets) {
         assert expenses != null : "Expenses list cannot be null";
-        assert budget >= 0 : "Budget cannot be negative";
         this.expenses = expenses;
         this.budget = budget;
         this.categoryBudgets = categoryBudgets != null ? categoryBudgets : new HashMap<>();
