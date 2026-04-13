@@ -334,7 +334,7 @@ Format: `list [TYPE]` where TYPE can be `expenses`, `loans`, `bookmarks`, or `bu
 * Use `list expenses` to display all expenses with their category, name, value, and date.
 * Use `list loans` to display all recorded loans with their name, value, and date.
 * Use `list bookmarks` to display all saved bookmarks with their category, name, value, and date.
-* Use `list budgets` to display all the category budgets with their remaining amount.
+* Use `list budgets` to display the global budget and category budgets with their remaining amount.
 
 Example: `list expenses`
 
@@ -388,10 +388,14 @@ Output:
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
+ 
+Global Budget Set: 1000.0
+Global Budget Remaining: 925.0
+
 Category        Budget          Remaining      
 --------------------------------------------------
-Transport       $700.00         $500.00        
-Food            $300.00         $279.00        
+Transport       $100.00         $100.00        
+Food            $200.00         $175.00        
 
 ________________________________________________________________
 ```

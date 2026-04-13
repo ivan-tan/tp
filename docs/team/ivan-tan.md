@@ -31,7 +31,7 @@ This was done so that future features may be implemented separately for expenses
 
 
 ### Contributions to the User Guide
-1. Wrote the introduction and listing of expenses portion
+1. Wrote the introduction, listing of expenses and listing of budgets.
 
 ### Contributions to the Developer Guide
 1. Wrote the following parts:
