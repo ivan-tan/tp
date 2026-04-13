@@ -248,6 +248,10 @@ public class Parser {
                         "NAME is required. Usage: add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]");
             }
 
+            if (!name.matches("[a-zA-Z0-9 ',.()/\\-]+")) {
+                throw new ExpensiveLehException("NAME contains invalid characters!");
+            }
+
             // 3. Check Amount third
             if (amount == null) {
                 throw new ExpensiveLehException(
@@ -258,6 +262,9 @@ public class Parser {
             }
             if (amount <= 0) {
                 throw new ExpensiveLehException("Amount must be positive!");
+            }
+            if (amount > 1000000000) {
+                throw new ExpensiveLehException("Amount cannot exceed 1,000,000,000!");
             }
 
             Expense expense;
@@ -372,6 +379,11 @@ public class Parser {
                         nameParts.append(" ").append(parts[++i]);
                     }
                     name = nameParts.toString();
+
+                    if (!name.matches("[a-zA-Z0-9 ',.()/\\-]+")) {
+                        throw new ExpensiveLehException("NAME contains invalid characters!");
+                    }
+
                     hasName = true;
                 } else if (part.startsWith("a/")) {
                     if (hasAmount) {
@@ -417,6 +429,9 @@ public class Parser {
                 }
                 if (amount <= 0) {
                     throw new ExpensiveLehException("Amount must be positive.");
+                }
+                if (amount > 1000000000) {
+                    throw new ExpensiveLehException("Amount cannot exceed 1,000,000,000!");
                 }
             }
 
