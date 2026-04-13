@@ -535,29 +535,26 @@ ________________________________________________________________
 
 ## Command Summary
 
-```
+| Command | Format | Example |
+|---------|--------|---------|
+| Add expense | `add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]` | `add c/Food n/Rice a/9.95 d/30-03-2026` |
+| Add loan | `add c/loan n/NAME a/AMOUNT [d/DD-MM-YYYY]` | `add c/loan n/John Doe a/50.00` |
+| Add bookmark to expenses | `add bookmark INDEX` | `add bookmark 1` |
+| Edit expense | `edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]` | `edit 1 n/Rice a/10.00` |
+| Edit loan | `edit loan INDEX [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]` | `edit loan 1 a/100.00` |
+| Delete expense | `delete expense INDEX` | `delete expense 1` |
+| Delete loan | `delete loan INDEX` | `delete loan 1` |
+| Delete bookmark | `delete bookmark INDEX` | `delete bookmark 1` |
+| Set global budget | `budget AMOUNT` | `budget 500.00` |
+| Set category budget | `budget c/CATEGORY a/AMOUNT` | `budget c/Food a/100.00` |
+| List expenses | `list expenses` | `list expenses` |
+| List loans | `list loans` | `list loans` |
+| List bookmarks | `list bookmarks` | `list bookmarks` |
+| List budgets | `list budgets` | `list budgets` |
+| Bookmark an expense | `bookmark INDEX` | `bookmark 1` |
+| Search expenses | `search KEYWORD` | `search chicken` |
+| Rank expenses | `rank expenses` | `rank expenses` |
+| Rank loans | `rank loans` | `rank loans` |
+| Help | `help` | `help` |
+| Exit | `exit` | `exit` |
 
-| Command                  | Format                                                       | Example                                         |
-|--------------------------|--------------------------------------------------------------|-------------------------------------------------|
-| Add expense              | `add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`              | `add c/Food n/Chicken Rice a/9.95 d/30-03-2026` |
-| Add loan                 | `add c/loan n/NAME a/AMOUNT [d/DD-MM-YYYY]`                  | `add c/loan n/John Doe a/50.00`                 |
-| Add bookmark to expenses | `add bookmark INDEX`                                         | `add bookmark 1`                                |
-| Edit expense             | `edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]` | `edit 1 n/Chicken Rice a/10.00`                 |
-| Edit loan                | `edit loan INDEX [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]`         | `edit loan 1 a/100.00`                          |
-| Delete expense           | `delete expense INDEX`                                       | `delete expense 1`                              |
-| Delete loan              | `delete loan INDEX`                                          | `delete loan 1`                                 |
-| Delete bookmark          | `delete bookmark INDEX`                                      | `delete bookmark 1`                             |
-| Set global budget        | `budget AMOUNT`                                              | `budget 500.00`                                 |
-| Set category budget      | `budget c/CATEGORY a/AMOUNT`                                 | `budget c/Food a/100.00`                        |
-| List expenses            | `list expenses`                                              | `list expenses`                                 |
-| List loans               | `list loans`                                                 | `list loans`                                    |
-| List bookmarks           | `list bookmarks`                                             | `list bookmarks`                                |
-| List budgets             | `list budgets`                                               | `list budgets`                                  |
-| Bookmark an expense      | `bookmark INDEX`                                             | `bookmark 1`                                    |
-| Search expenses          | `search KEYWORD`                                             | `search chicken`                                |
-| Rank expenses            | `rank expenses`                                              | `rank expenses`                                 |
-| Rank loans               | `rank loans`                                                 | `rank loans`                                    |
-| Help                     | `help`                                                       | `help`                                          |
-| Exit                     | `exit`                                                       | `exit`                                          |
-
-```
