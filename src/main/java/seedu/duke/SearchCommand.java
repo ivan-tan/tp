@@ -17,6 +17,7 @@ public class SearchCommand extends Command {
         LoanManager loanManager = managers.getLoanManager();
 
         ArrayList<Expense> matchedExpenses = expenseManager.searchByKeyword(keyword);
+        ArrayList<Integer> matchedExpenseIndices = expenseManager.searchByKeywordWithIndices(keyword);
         ArrayList<Loan> matchedLoans = loanManager.searchByKeyword(keyword);
 
         boolean hasExpenses = !matchedExpenses.isEmpty();
@@ -38,8 +39,9 @@ public class SearchCommand extends Command {
 
             for (int i = 0; i < matchedExpenses.size(); i++) {
                 Expense expense = matchedExpenses.get(i);
+                int actualIndex = matchedExpenseIndices.get(i);
                 result.append(String.format("%-6d %-12s %-20s $%-9.2f %-12s%n",
-                        i + 1,
+                        actualIndex + 1,
                         expense.getCategory(),
                         expense.getDescription(),
                         expense.getAmount(),

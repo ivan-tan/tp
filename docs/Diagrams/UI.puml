@@ -47,10 +47,10 @@ class RankCommand {
 }
 
 ' Relationships
-UI "1" *-- "1" Scanner : encapsulates >
-ExpensiveLeh --> "1" UI : initializes >
-Command --> "1" UI : outputs to >
-Command <|-- RankCommand : extends
+UI "1" *-- "1" Scanner
+ExpensiveLeh --> "1" UI
+Command --> "1" UI
+Command <|-- RankCommand
 
 note bottom of UI
   The central class handling CLI

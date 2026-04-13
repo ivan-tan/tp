@@ -179,4 +179,19 @@ public class ExpenseManager {
         
         return results;
     }
+
+    public ArrayList<Integer> searchByKeywordWithIndices(String keyword) {
+        ArrayList<Integer> indices = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+
+        for (int i = 0; i < expenses.size(); i++) {
+            Expense expense = expenses.get(i);
+            if (expense.getDescription().toLowerCase().contains(lowerKeyword) ||
+                expense.getCategory().toLowerCase().contains(lowerKeyword)) {
+                indices.add(i);
+            }
+        }
+
+        return indices;
+    }
 }

@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+hide circle
 
 class BookmarkCommand {
     - index : int
@@ -63,16 +64,18 @@ Expense <|-- Transport
 Expense <|-- Groceries
 Expense <|-- Others
 
-Parser ..> BookmarkCommand : creates
+Parser ..> BookmarkCommand
 
-BookmarkCommand --> Managers : uses
-BookmarkCommand ..> ExpensiveLehException : throws
+BookmarkCommand --> Managers
+
+BookmarkCommand ..> ExpensiveLehException
 
 Managers --> ExpenseManager
+
 Managers --> Bookmark
 
-Bookmark --> Expense : stores
+Bookmark "1" o-- "*" Expense
 
-ExpenseManager --> Expense : manages
+ExpenseManager "1" o-- "*" Expense
 
 @enduml

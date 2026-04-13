@@ -8,8 +8,6 @@ participant ":Parser" as Parser
 participant "s:SearchCommand" as SearchCommand
 participant ":ExpenseManager" as ExpenseManager
 participant ":LoanManager" as LoanManager
-participant "e:Expense" as Expense
-participant "l:Loan" as Loan
 participant ":UI" as UI
 
 User -> Main : inputs "search KEYWORD"
@@ -30,77 +28,52 @@ deactivate Parser
 Main -> SearchCommand : execute(managers, ui)
 activate SearchCommand
 
-SearchCommand -> ExpenseManager : searchByKeyword(keyword)
-activate ExpenseManager
-
 note right of ExpenseManager
-    Iterates through all expenses
-    and checks if description or
-    category contains keyword
-    (case-insensitive)
+    Searches through all expenses
+    to find matches by keyword
+    (in description or category)
 end note
 
-loop for each Expense e in expenses
-    ExpenseManager -> Expense : getDescription()
-    activate Expense
-    Expense --> ExpenseManager : description
-    deactivate Expense
-
-    ExpenseManager -> Expense : getCategory()
-    activate Expense
-    Expense --> ExpenseManager : category
-    deactivate Expense
-
-    alt description or category contains keyword
-        ExpenseManager -> Expense : add to results
-    end
-end
-
+SearchCommand -> ExpenseManager : searchByKeyword(keyword)
+activate ExpenseManager
 ExpenseManager --> SearchCommand : matchedExpenses
 deactivate ExpenseManager
 
-SearchCommand -> LoanManager : searchByKeyword(keyword)
-activate LoanManager
-
-note right of LoanManager
-    Iterates through all loans
-    and checks if description or
-    category contains keyword
-    (case-insensitive)
+note right of ExpenseManager
+    Maps matched expenses to
+    their actual indices in the
+    full expense list
 end note
 
-loop for each Loan l in loans
-    LoanManager -> Loan : getDescription()
-    activate Loan
-    Loan --> LoanManager : description
-    deactivate Loan
+SearchCommand -> ExpenseManager : searchByKeywordWithIndices(keyword)
+activate ExpenseManager
+ExpenseManager --> SearchCommand : actualIndices
+deactivate ExpenseManager
 
-    LoanManager -> Loan : getCategory()
-    activate Loan
-    Loan --> LoanManager : category
-    deactivate Loan
+note right of LoanManager
+    Searches through all loans
+    to find matches by keyword
+    (in description or category)
+end note
 
-    alt description or category contains keyword
-        LoanManager -> Loan : add to results
-    end
-end
-
+SearchCommand -> LoanManager : searchByKeyword(keyword)
+activate LoanManager
 LoanManager --> SearchCommand : matchedLoans
 deactivate LoanManager
 
-alt both matchedExpenses and matchedLoans are empty
+alt no results found (both empty)
     SearchCommand -> UI : showMessage("No expenses or loans found...")
     activate UI
     UI --> SearchCommand
     deactivate UI
 else results found
     note right of SearchCommand
-        Formats matched expenses
-        and loans in separate
-        sections as formatted
-        tables with Index,
-        Category, Name, Value,
-        and Date columns
+        Formats results into:
+        - Header with search keyword
+        - Expenses section (if any)
+        - Loans section (if any)
+        Each row: Index, Category,
+        Name, Value, Date
     end note
 
     SearchCommand -> UI : showMessage(formattedResults)

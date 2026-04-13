@@ -460,12 +460,24 @@ public class Parser {
 
         try {
             String[] parts = line.split("\\s+");
+            boolean hasCategory = false;
+            boolean hasAmount = false;
             for (int i = 1; i < parts.length; i++) {
                 String part = parts[i];
                 if (part.startsWith("c/")) {
+                    if (hasCategory) {
+                        throw new ExpensiveLehException("Duplicate category flag 'c/' found. "
+                                + "Usage: budget c/CATEGORY a/AMOUNT");
+                    }
                     category = part.substring(2);
+                    hasCategory = true;
                 } else if (part.startsWith("a/")) {
+                    if (hasAmount) {
+                        throw new ExpensiveLehException("Duplicate amount flag 'a/' found. "
+                                + "Usage: budget c/CATEGORY a/AMOUNT");
+                    }
                     amount = Double.parseDouble(part.substring(2));
+                    hasAmount = true;
                 }
             }
 

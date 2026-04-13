@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+hide circle
 
 abstract class Command {
     + execute(managers : Managers, ui : UI) : void
@@ -38,14 +39,19 @@ class Transport
 class Groceries
 class Others
 
-Command --> Managers : uses
-Command --> UI : uses
+Command --> Managers
+
+Command --> UI
+
 Managers --> ExpenseManager
+
 Managers --> LoanManager
+
 Managers --> Bookmark
 
-AddCommand --> Expense : creates
-AddCommand --> Loan : creates
+AddCommand --> Expense
+
+AddCommand --> Loan
 
 Expense <|-- Food
 Expense <|-- Transport

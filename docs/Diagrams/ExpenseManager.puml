@@ -112,7 +112,7 @@ class UI {
 }
 
 ' Relationships
-ExpenseManager "1" o-- "*" Expense : manages >
+ExpenseManager "1" *-- "*" Expense
 
 Expense <|-- Food
 Expense <|-- Transport
@@ -125,9 +125,9 @@ Command <|-- EditCommand
 Command <|-- ListCommand
 Command <|-- BudgetCommand
 
-AddCommand "1" --> "1" Expense : uses >
+AddCommand --> Expense
 
-Command --> ExpenseManager : uses >
-Command --> UI : uses >
+Command --> ExpenseManager
+Command --> UI
 
 @enduml

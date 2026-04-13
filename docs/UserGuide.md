@@ -23,6 +23,7 @@ Format: `budget AMOUNT` or `budget c/CATEGORY a/AMOUNT`
 Example: `budget 1000` sets the overall budget to $1000.
 
 Output: 
+
 ```
 ________________________________________________________________________________
 ExpensiveLeh says -> Budget of $1000.00 set successfully!
@@ -33,6 +34,7 @@ ________________________________________________________________________________
 Example: `budget c/Food a/300` sets the food category budget to $300.
 
 Output:
+
 ```
 ________________________________________________________________________________
 ExpensiveLeh says -> Budget of $300.00 set successfully for Food!
@@ -42,6 +44,7 @@ ________________________________________________________________________________
 Example: `budget c/Transport a/700` sets the transport category budget to $700.
 
 Output:
+
 ```
 ________________________________________________________________________________
 ExpensiveLeh says -> Budget of $700.00 set successfully for Transport!
@@ -60,6 +63,7 @@ Format: `add c/CATEGORY n/NAME a/AMOUNT [d/DD-MM-YYYY]`
 Example: `add c/Food n/Jollibee a/9.95 d/19-03-2026`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Expense added successfully!
@@ -76,6 +80,7 @@ ________________________________________________________________
 Example: `add c/Food n/McDonald's a/12.50 d/20-03-2026`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Expense added successfully!
@@ -92,6 +97,7 @@ ________________________________________________________________
 Example: `add c/Transport n/Plane Ticket a/200`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Expense added successfully!
@@ -113,6 +119,7 @@ Format: `add c/loan n/NAME a/AMOUNT [d/DD-MM-YYYY]`
 Example: `add c/loan n/Jack a/100`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Loan recorded successfully!
@@ -124,6 +131,7 @@ Date     : 30-03-2026
 Total Owed to You: $100.00
 ________________________________________________________________
 ```
+
 ### Adding a bookmark: `bookmark`
 Saves an existing expense from your expense list as a bookmark, so you can quickly re-add it in the future.
 
@@ -134,6 +142,7 @@ Format: `bookmark INDEX`
 Example: `bookmark 2`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Successfully bookmarked: Food McDonald's $12.50
@@ -153,6 +162,7 @@ Format: `add bookmark INDEX`
 Example: `add bookmark 1`
 
 Assuming bookmark list contains:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -166,6 +176,7 @@ ________________________________________________________________
 ```
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Expense added successfully!
@@ -192,6 +203,7 @@ Format: `edit INDEX [c/CATEGORY] [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]`
 Example: `edit 2 n/McDonald's Meal a/15.00`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Expense at index 2 updated successfully!
@@ -209,6 +221,7 @@ Format: `edit loan INDEX [n/NAME] [a/AMOUNT] [d/DD-MM-YYYY]`
 Example: `edit loan 1 n/Jonathan a/55.00`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Loan at index 1 updated successfully!
@@ -225,7 +238,8 @@ Format: `delete expense INDEX`
 
 Example: `delete expense 1`
 
-* Assuming expense list contains:
+Assuming expense list contains:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -240,6 +254,7 @@ ________________________________________________________________
 ```
 
 Output: 
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 1: Food Jollibee $9.95 19-03-2026 deleted!
@@ -247,6 +262,7 @@ ________________________________________________________________
 ```
 
 ### Deleting a loan: `delete`
+
 Deletes the specified loan.
 
 Format: `delete loan INDEX`
@@ -256,7 +272,8 @@ Format: `delete loan INDEX`
 
 Example: `delete loan 2`
 
-* Assuming loan list contains:
+Assuming loan list contains:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -269,6 +286,7 @@ ________________________________________________________________
 ```
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Loan ID 2 for Joseph ($100.00) deleted!
@@ -276,6 +294,7 @@ ________________________________________________________________
 ```
 
 ### Deleting a bookmark: `delete`
+
 Deletes the specified bookmark.
 
 Format: `delete bookmark INDEX`
@@ -285,7 +304,8 @@ Format: `delete bookmark INDEX`
 
 Example: `delete bookmark 1`
 
-* Assuming expense list contains:
+Assuming expense list contains:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -299,6 +319,7 @@ ________________________________________________________________
 ```
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Bookmark ID 1 for Noodles ($6.00) deleted!
@@ -317,6 +338,7 @@ Format: `list [TYPE]` where TYPE can be `expenses`, `loans`, `bookmarks`, or `bu
 Example: `list expenses`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -332,6 +354,7 @@ ________________________________________________________________
 Example: `list loans`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -345,6 +368,7 @@ ________________________________________________________________
 Example: `list bookmarks`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -359,6 +383,7 @@ ________________________________________________________________
 Example: `list budgets`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -382,6 +407,7 @@ Format: `search KEYWORD`
 Example: `search mcdonald's`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -398,6 +424,7 @@ ________________________________________________________________
 Example: `search john`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -415,6 +442,7 @@ ________________________________________________________________
 Example: `search food`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> 
@@ -432,6 +460,7 @@ ________________________________________________________________
 If no expenses or loans match the keyword: `search xyz`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> No expenses or loans found with keyword: 'xyz'
@@ -448,6 +477,7 @@ Format: `rank expenses` OR `rank loans`
 Example: `rank expenses`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Here is your spending ranked, by category: 
@@ -460,6 +490,7 @@ ________________________________________________________________
 Example: `rank loans`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Here are your loans ranked, by person: 
@@ -480,6 +511,7 @@ Format: `help`
 Example: `help`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says ->
@@ -502,7 +534,7 @@ To search for expenses and loans, use 'search KEYWORD'. Eg: search chicken
 To rank expenses by amount, use 'rank expenses'
 To rank loans by amount, use 'rank loans'
 To view all commands, use 'help'
-To exit the program, use 'exit'
+To exit the program, use 'exit', 'bye' or 'quit'
 ________________________________________________________________
 ```
 
@@ -512,9 +544,10 @@ Loans, expenses, bookmarks and budgets are automatically saved in the disk. Ther
 ### Exit
 Exits the program.
 
-Format: `exit`
+Format: `exit` or `bye` or `quit`
 
 Output:
+
 ```
 ________________________________________________________________
 ExpensiveLeh says -> Bye!
@@ -537,7 +570,7 @@ ________________________________________________________________
 
 ## Command Summary
 
-```
+
 
 | Command                  | Format                                                       | Example                                         |
 |--------------------------|--------------------------------------------------------------|-------------------------------------------------|
@@ -560,6 +593,5 @@ ________________________________________________________________
 | Rank expenses            | `rank expenses`                                              | `rank expenses`                                 |
 | Rank loans               | `rank loans`                                                 | `rank loans`                                    |
 | Help                     | `help`                                                       | `help`                                          |
-| Exit                     | `exit`                                                       | `exit`                                          |
+| Exit                     | `exit` or `bye` or `quit`                                    | `exit`                                          |
 
-```

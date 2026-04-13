@@ -1,4 +1,4 @@
-# Howie Yeo Hao Yan - Project Portfolio Page
+# Howie Yeo Hao Yu - Project Portfolio Page
 
 ## Overview
 
@@ -13,18 +13,25 @@ ExpensiveLeh is a CLI for managing your personal finances. Users can indicate th
 ### Enhancements implemented
 
 **New feature:** Designed Expense Superclass
-
-- Designed the abstract `Expense` superclass with protected attributes (`description`, `amount`, `date`) and abstract method `getCategory()` to support polymorphic handling of different expense types.
-- Implemented common methods (`getDescription()`, `getCategory()`, `getAmount()`, `getDate()`, `getFormattedDate()`) enabling all expense types to work uniformly through a single interface.
-- Created concrete subclasses (`Food`, `Transport`, `Groceries`, `Others`) each implementing their specific category while inheriting common functionality, allowing new expense categories to be added without modifying existing code.
-- Extended `Loan` class to also inherit from `Expense`, enabling unified handling of both expenses and loans through the common interface and allowing them to be treated interchangeably in collections and operations.
+- Created abstract `Expense` superclass with polymorphic support for different expense types (Food, Transport, Groceries, Others)
+- Implemented common methods enabling all expense types to work uniformly through a single interface
+- Extended `Loan` class to inherit from `Expense`, enabling unified handling of both expenses and loans
 
 **New feature:** Search Function
+- Implemented comprehensive search functionality for expenses and loans by keyword with case-insensitive matching
+- Created `searchByKeyword()` method in `LoanManager` mirroring the expense search pattern
+- Enhanced `SearchCommand` to perform parallel searches and combine results into organized sections
 
-- Implemented comprehensive search functionality allowing users to find both expenses and loans by keyword with case-insensitive matching across descriptions and categories (e.g., searching "chicken" finds "Chicken Rice" expense and "Chicken Dinner Catering" loan).
-- Created `searchByKeyword()` method in `LoanManager` that mirrors the expense search pattern: converts keywords to lowercase, iterates through loans, and matches items where description or category contains the keyword, returning an `ArrayList<Loan>`.
-- Enhanced `SearchCommand` to perform parallel searches: calls both `ExpenseManager#searchByKeyword()` and `LoanManager#searchByKeyword()` independently, then combines results into organized sections ("--- Expenses ---" and "--- Loans ---") for cohesive presentation.
-- Ensured unified user experience: identical case-insensitive and partial matching behavior across both data types, consistent output formatting with index, category, name, value, and date columns, and unified error handling displaying "No expenses or loans found with keyword: 'xyz'" when neither type has matches.
+**Bug Fix:** Search Result Index Mismatch
+- Fixed bug where search results displayed incorrect indices, causing delete/edit commands to target wrong expenses
+- Modified `SearchCommand` to display actual expense indices
+
+**Enhancement:** UML Diagram Standardization
+- Audited all UML class diagrams and updated 8 diagrams to comply with standard UML 2.0 notation
+- Replaced custom relationship labels with standard UML arrows and added proper multiplicity notation
+
+**Enhancement:** Expense Class Hierarchy Diagram Redesign
+- Redesigned Expense.puml for improved readability with 50% larger scale and reorganized structure
 
 ### Contributions to the User Guide
 
