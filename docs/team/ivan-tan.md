@@ -50,8 +50,9 @@ This was done so that future features may be implemented separately for expenses
 1. Managed Release v1.0 on Github
 2. Managed Milestones for v1.0 up till v2.1
 3. Resolved huge merge conflict (see PR #[49](https://github.com/AY2526S2-CS2113-W11-3/tp/pull/49))
-4. Led team meetings, ensuring milestones were met and teammates were delegated tasks.
-5. Consistently reviewed code and opened issues whenever relevant, (Opened [17](https://github.com/AY2526S2-CS2113-W11-3/tp/issues?q=is%3Aissue%20state%3Aclosed%20author%3Aivan-tan) issues)
+4. Update Github.io main landing page and linked each member's PPP in AboutUs.
+5. Led team meetings, ensuring milestones were met and teammates were delegated tasks.
+6. Consistently reviewed code and opened issues whenever relevant, (Opened [17](https://github.com/AY2526S2-CS2113-W11-3/tp/issues?q=is%3Aissue%20state%3Aclosed%20author%3Aivan-tan) issues)
 some of which were bugs in code written by teammates.
 
 ### Review/Mentoring contributions
