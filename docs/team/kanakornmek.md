@@ -13,16 +13,45 @@ ExpensiveLeh is a CLI for managing your personal finances. Users can indicate th
 
 **Feature: Implemented ExpenseManager with Budget Tracking**
 
-- Implemented expense management with add, delete, edit, and search operations
+I implemented a comprehensive expense management system that allows users to track their spending against budget limits.The implementation includes:
+
+- Expense management with add, delete, edit, and search operations
+- A polymorphic expense class hierarchy supporting different expense types
+- Integration with the budget system for real-time tracking
 
 **Feature: Budget and Category Budget Management**
+
+Created a budgeting system that supports both global and category-specific budgets. This enhancement involved:
 
 - Created `BudgetCommand` and `CategoryBudgetCommand` classes following the Command pattern
 - Implemented `ListBudgetsCommand` to display all category budgets with remaining amounts
 - Added validation to prevent negative budgets and empty category names
+- Implemented automatic global budget adjustment when category budgets sum exceeds it
 
-**GitHub Organization and Repository Setup**
+**Feature: Budget Violation Warnings**
 
+Enhanced the user experience with budget violation warnings. This feature helps users stay within their financial limits by:
+
+- Adding warning notifications when adding or editing expenses that would exceed budget limits
+- Displaying clear messages about remaining budget amounts
+
+### Bug fixes
+
+During the PE-D phase, I actively fixed multiple reported bugs and issues to improve product quality and user experience:
+
+- **Fix #132**: Removed contradictory statement about budget persistence in the Developer Guide
+
+- **Fix #141**: Added budget violation warnings for add and edit expense commands and fixed category budget output format
+
+- **Fix #128 and #130**: Reject duplicate `c/` and `a/` fields in budget command
+
+- **Fix #140**: Notify user when invalid category is converted to "Others" in edit command
+
+- **Fix #146**: Reject invalid format without `n/` and `a/` prefixes in edit command
+
+- **Fix #113**: Reject NaN and Infinity values in amount validation
+
+- **Budget Enhancement**: Update global budget when category budgets sum exceeds it
 
 ### Contributions to the User Guide
 
@@ -32,14 +61,17 @@ ExpensiveLeh is a CLI for managing your personal finances. Users can indicate th
   - Listing all category budgets (`list budgets`)
 - Documented expense management features including:
   - Adding expenses
-  - Editing expenses 
+  - Editing expenses
   - Deleting expenses
+- Documented budget violation warnings feature
+- Documented exit commands (`bye` and `quit`)
 
 ### Contributions to the Developer Guide
 
 **Design Section:**
 - Added documentation for the ExpenseManager component
 - Created class diagrams showing the Expense superclass hierarchy
+- Simplified Expense Manager class diagram for clarity
 
 **Implementation Section:**
 - Wrote the implementation details of expense management features:
@@ -48,13 +80,23 @@ ExpensiveLeh is a CLI for managing your personal finances. Users can indicate th
   - Edit Expense Feature with sequence diagrams
   - Budget Tracking Feature implementation details
 - Included example usage scenarios for each feature
+- Added budget manual testing instructions
+- Examples of the diagrams added:
+![ExpenseManager.png](../Diagrams/ExpenseManager.png)
+![AddExpenseSequenceDiagram.png](../Diagrams/AddExpenseSequenceDiagram.png)
+
 
 ### Contributions to team-based tasks
 
 - Set up GitHub team organization and repository
 - Created and managed project issues on GitHub
+- Actively fixes issues the team reported.
 
 ### Review/mentoring contributions
 
-- Regularly reviewed team pull requests
+- Regularly reviewed team pull requests. Some examples: 
+  - PR #[24](https://github.com/AY2526S2-CS2113-W11-3/tp/pull/24)
+  - PR #[34](https://github.com/AY2526S2-CS2113-W11-3/tp/pull/34)
+  - PR #[44](https://github.com/AY2526S2-CS2113-W11-3/tp/pull/44)
+  - PR #[49](https://github.com/AY2526S2-CS2113-W11-3/tp/pull/49)
 - Provided suggestions for improving the project architecture and user experience
