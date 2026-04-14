@@ -440,7 +440,6 @@ The sequence diagram below illustrates the interactions within the system when a
 
 **Alternative 1 (current choice):** Store global budget as `double` and category budgets as `HashMap<String, Double>`.
 - *Pros*: Simple, straightforward implementation, easy to query
-- *Cons*: No data persistence (budgets are not saved to files)
 
 **Alternative 2:** Create a `Budget` class with methods for all budget operations.
 - *Pros*: Encapsulates budget logic, easier to extend, allows persistence integration
